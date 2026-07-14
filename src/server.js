@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const db = require('./config/db');
 const auth = require('./middleware/auth');
+const mailer = require('./utils/mailer');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const xssClean = require('xss-clean');
@@ -544,13 +545,30 @@ app.post('/api/admin/products/bulk', auth, upload.single('csvFile'), async (req,
 // CALLBACK REQUESTS
 // ============================================================
 app.post('/api/callbacks', formLimiter, async (req, res) => {
-  const { name, phone } = req.body;
+  const { name, phone, email, message } = req.body;
   if (!name || !phone) {
     return res.status(400).json({ success: false, message: 'Name and phone are required.' });
   }
   try {
-    const id = await db.addCallback({ name, phone });
-    return res.json({ success: true, message: 'Callback request submitted!', id });
+    const id = await db.addCallback({
+      name,
+      phone,
+      email: email || '',
+      message: message || ''
+    });
+    
+    // Send Automated Email Alert
+    mailer.sendEmail({
+      to: 'admin@vellprint.in',
+      subject: `New Callback Request from ${name}`,
+      html: `<h3>New Callback Request</h3>
+             <p><strong>Name:</strong> ${name}</p>
+             <p><strong>Phone:</strong> ${phone}</p>
+             <p><strong>Email:</strong> ${email || 'N/A'}</p>
+             <p><strong>Message:</strong> ${message || 'N/A'}</p>`
+    });
+
+    return res.json({ success: true, message: 'Callback request received.', id });
   } catch (err) {
     console.error('Callback API error:', err);
     return res.status(500).json({ success: false, message: 'Failed to submit callback request.' });
@@ -588,6 +606,20 @@ app.post('/api/service-tickets', formLimiter, async (req, res) => {
       preferred_date: req.body.preferred_date || '',
       description: req.body.description
     });
+
+    // Send Automated Email Alert
+    mailer.sendEmail({
+      to: 'admin@vellprint.in',
+      subject: `[VPT-${id}] New Service Ticket: ${req.body.equipment_type}`,
+      html: `<h3>New Service Ticket: #VPT-${id}</h3>
+             <p><strong>Customer:</strong> ${req.body.customer_name}</p>
+             <p><strong>Phone:</strong> ${req.body.phone}</p>
+             <p><strong>Equipment:</strong> ${req.body.equipment_type} (${req.body.brand || ''} ${req.body.model_number || ''})</p>
+             <p><strong>Issue:</strong> ${req.body.issue_category}</p>
+             <p><strong>Priority:</strong> ${req.body.priority || 'Normal'}</p>
+             <p><strong>Description:</strong> ${req.body.description}</p>`
+    });
+
     return res.json({ success: true, message: 'Service ticket submitted!', ticketId: id });
   } catch (err) {
     console.error('Service ticket API error:', err);
@@ -672,6 +704,42 @@ app.delete('/api/admin/blog/:id', auth, async (req, res) => {
   }
 });
 
+
+// ============================================================
+// TESTIMONIALS
+// ============================================================
+
+app.get('/api/testimonials', async (req, res) => {
+  try {
+    const data = await db.getTestimonials();
+    return res.json({ success: true, testimonials: data });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Failed to load testimonials.' });
+  }
+});
+
+app.post('/api/admin/testimonials', auth, async (req, res) => {
+  const { name, company, content, rating } = req.body;
+  if (!name || !content) {
+    return res.status(400).json({ success: false, message: 'Name and content are required.' });
+  }
+  try {
+    const id = await db.addTestimonial({ name, company, content, rating: parseInt(rating) || 5 });
+    return res.json({ success: true, message: 'Testimonial added!', id });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Failed to add testimonial.' });
+  }
+});
+
+app.delete('/api/admin/testimonials/:id', auth, async (req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    await db.deleteTestimonial(id);
+    return res.json({ success: true, message: 'Testimonial deleted.' });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Failed to delete testimonial.' });
+  }
+});
 
 // Start the server
 startServer();

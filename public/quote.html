@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" class="light-theme">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quotation | Vell Print Technology</title>
+  <script src="/config.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --color-primary: #1e3a8a; /* Trust Blue */
+      --color-text: #1f2937;
+      --color-gray: #6b7280;
+      --color-border: #e5e7eb;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--color-text);
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+      background: #f3f4f6;
+    }
+
+    .quote-container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 50px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .logo-area img {
+      max-height: 60px;
+    }
+
+    .company-details {
+      text-align: right;
+      font-size: 0.9rem;
+      color: var(--color-gray);
+    }
+
+    .company-details strong {
+      color: var(--color-primary);
+      font-size: 1.2rem;
+      display: block;
+    }
+
+    .quote-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .meta-box {
+      width: 48%;
+    }
+
+    .meta-box h4 {
+      margin: 0 0 10px 0;
+      color: var(--color-primary);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .quote-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    .quote-table th {
+      background-color: var(--color-primary);
+      color: white;
+      text-align: left;
+      padding: 12px;
+      font-weight: 500;
+    }
+
+    .quote-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .quote-table .item-col { width: 50%; }
+    .quote-table .qty-col { width: 15%; text-align: center; }
+    .quote-table .price-col { width: 35%; text-align: right; }
+
+    .totals {
+      width: 50%;
+      float: right;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .total-row.grand-total {
+      font-weight: 700;
+      font-size: 1.2rem;
+      border-bottom: none;
+      border-top: 2px solid var(--color-text);
+      color: var(--color-primary);
+    }
+
+    .clearfix::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+
+    .footer {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--color-gray);
+      border-top: 1px solid var(--color-border);
+      padding-top: 20px;
+    }
+
+    .print-btn {
+      display: block;
+      width: 200px;
+      margin: 20px auto;
+      padding: 12px 24px;
+      background: var(--color-primary);
+      color: white;
+      text-align: center;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    @media print {
+      body { background: white; }
+      .quote-container { margin: 0; padding: 20px; box-shadow: none; max-width: 100%; }
+      .print-btn { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+
+  <div class="quote-container">
+    <div class="header">
+      <div class="logo-area">
+        <img src="/logo.png" alt="Vell Print Technology">
+      </div>
+      <div class="company-details">
+        <strong>Vell Print Technology</strong>
+        330 B1, Periya Suppannan Street<br>
+        N.S.R. Road, Saibabacolony<br>
+        Coimbatore - 641011<br>
+        Phone: 98948 33377<br>
+        Email: admin@vellprint.in
+      </div>
+    </div>
+
+    <div class="quote-meta">
+      <div class="meta-box">
+        <h4>Quotation To:</h4>
+        <div id="customer-details">
+          <strong>Loading...</strong>
+        </div>
+      </div>
+      <div class="meta-box" style="text-align: right;">
+        <h4>Quotation Details:</h4>
+        <strong>Quote No:</strong> <span id="quote-no">...</span><br>
+        <strong>Date:</strong> <span id="quote-date">...</span><br>
+        <strong>Valid Until:</strong> <span id="quote-valid">...</span>
+      </div>
+    </div>
+
+    <table class="quote-table">
+      <thead>
+        <tr>
+          <th class="item-col">Item Description</th>
+          <th class="qty-col">Quantity</th>
+          <th class="price-col">Estimated Price (INR)</th>
+        </tr>
+      </thead>
+      <tbody id="quote-items">
+        <tr><td colspan="3">Loading items...</td></tr>
+      </tbody>
+    </table>
+
+    <div class="totals clearfix">
+      <div class="total-row grand-total">
+        <span>Total Amount:</span>
+        <span id="grand-total">To Be Provided</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px; font-size: 0.9rem;">
+      <strong>Terms & Conditions:</strong>
+      <ol style="color: var(--color-gray); margin-top: 5px; padding-left: 20px;">
+        <li>This is a generated enquiry quotation. Final prices may vary based on stock availability and bulk discounts.</li>
+        <li>Taxes (GST) will be calculated at the time of final invoicing.</li>
+        <li>Payment terms: 100% advance or as discussed during final order confirmation.</li>
+      </ol>
+    </div>
+
+    <div class="footer">
+      Thank you for your business!<br>
+      For any clarifications, please contact us at 98948 33377
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const enquiryId = urlParams.get('id');
+
+      if (!enquiryId) {
+        document.getElementById('customer-details').innerHTML = '<span style="color:red">Error: No Enquiry ID provided.</span>';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${window.API_BASE_URL}/api/admin/enquiries`, { credentials: 'include' });
+        const data = await response.json();
+        
+        if (data.success) {
+          const enquiry = data.enquiries.find(e => e.id == enquiryId);
+          if (enquiry) {
+            renderQuote(enquiry);
+            // Automatically trigger print dialog after 500ms
+            setTimeout(() => window.print(), 500);
+          } else {
+            document.getElementById('customer-details').innerHTML = '<span style="color:red">Error: Enquiry not found.</span>';
+          }
+        }
+      } catch (err) {
+        document.getElementById('customer-details').innerHTML = '<span style="color:red">Error loading data. Ensure you are logged in as admin.</span>';
+      }
+    });
+
+    function renderQuote(enquiry) {
+      document.getElementById('quote-no').textContent = `VPT-Q-${enquiry.id.toString().padStart(4, '0')}`;
+      
+      const date = new Date(enquiry.created_at);
+      document.getElementById('quote-date').textContent = date.toLocaleDateString();
+      
+      const validDate = new Date(date);
+      validDate.setDate(validDate.getDate() + 15);
+      document.getElementById('quote-valid').textContent = validDate.toLocaleDateString();
+
+      document.getElementById('customer-details').innerHTML = `
+        <strong>${enquiry.customer_name}</strong><br>
+        ${enquiry.company ? enquiry.company + '<br>' : ''}
+        Phone: ${enquiry.phone}<br>
+        Email: ${enquiry.email || 'N/A'}
+      `;
+
+      const itemsTbody = document.getElementById('quote-items');
+      let itemsHtml = '';
+      let totalAmount = 0;
+
+      try {
+        const cartItems = JSON.parse(enquiry.cart_items);
+        if (cartItems && cartItems.length > 0) {
+          cartItems.forEach(item => {
+            const price = parseFloat(item.price.replace(/,/g, ''));
+            const rowTotal = price * item.quantity;
+            totalAmount += rowTotal;
+
+            itemsHtml += `
+              <tr>
+                <td><strong>${item.name}</strong><br><small style="color:#6b7280">${item.brand || 'Vell Print'}</small></td>
+                <td style="text-align: center;">${item.quantity}</td>
+                <td style="text-align: right;">₹${rowTotal.toLocaleString()}</td>
+              </tr>
+            `;
+          });
+          document.getElementById('grand-total').textContent = `₹${totalAmount.toLocaleString()}`;
+        } else {
+          itemsHtml = `<tr><td colspan="3">No items specified.</td></tr>`;
+        }
+      } catch (e) {
+        itemsHtml = `<tr><td colspan="3">Item list formatting error.</td></tr>`;
+      }
+
+      itemsTbody.innerHTML = itemsHtml;
+    }
+  </script>
+</body>
+</html>

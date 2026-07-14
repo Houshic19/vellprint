@@ -12,6 +12,75 @@ document.addEventListener('DOMContentLoaded', () => {
     showDashboard();
   }
 
+  // Utility: Export to CSV
+  function exportToCSV(filename, rows) {
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + rows.map(e => e.join(",")).join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  window.exportDealersCSV = async () => {
+    try {
+      const res = await fetch(window.API_BASE_URL + '/api/admin/dealers', { credentials: 'include' });
+      const data = await res.json();
+      if (data.success && data.dealers.length) {
+        const rows = [["ID", "Business Name", "Owner Name", "Mobile", "GST", "Date"]];
+        data.dealers.forEach(d => {
+          rows.push([d.id, `"${d.business_name}"`, `"${d.owner_name}"`, d.mobile, d.gst_number || '', new Date(d.created_at).toLocaleDateString()]);
+        });
+        exportToCSV("dealers_export.csv", rows);
+      }
+    } catch(e) {}
+  };
+
+  window.exportEnquiriesCSV = async () => {
+    try {
+      const res = await fetch(window.API_BASE_URL + '/api/admin/enquiries', { credentials: 'include' });
+      const data = await res.json();
+      if (data.success && data.enquiries.length) {
+        const rows = [["ID", "Business Name", "Dealer Name", "Phone", "Delivery Location", "Date"]];
+        data.enquiries.forEach(e => {
+          rows.push([e.id, `"${e.business_name}"`, `"${e.dealer_name}"`, e.phone, `"${e.delivery_location}"`, new Date(e.created_at).toLocaleDateString()]);
+        });
+        exportToCSV("enquiries_export.csv", rows);
+      }
+    } catch(e) {}
+  };
+
+  window.exportCallbacksCSV = async () => {
+    try {
+      const res = await fetch(window.API_BASE_URL + '/api/admin/callbacks', { credentials: 'include' });
+      const data = await res.json();
+      if (data.success && data.callbacks.length) {
+        const rows = [["ID", "Name", "Phone", "Status", "Date"]];
+        data.callbacks.forEach(c => {
+          rows.push([c.id, `"${c.name}"`, c.phone, c.status, new Date(c.created_at).toLocaleDateString()]);
+        });
+        exportToCSV("callbacks_export.csv", rows);
+      }
+    } catch(e) {}
+  };
+
+  window.exportTicketsCSV = async () => {
+    try {
+      const res = await fetch(window.API_BASE_URL + '/api/admin/service-tickets', { credentials: 'include' });
+      const data = await res.json();
+      if (data.success && data.tickets.length) {
+        const rows = [["ID", "Customer", "Equipment", "Issue", "Priority", "Status", "Date"]];
+        data.tickets.forEach(t => {
+          rows.push([t.id, `"${t.customer_name}"`, `"${t.equipment_type}"`, `"${t.issue_category}"`, t.priority, t.status, new Date(t.created_at).toLocaleDateString()]);
+        });
+        exportToCSV("tickets_export.csv", rows);
+      }
+    } catch(e) {}
+  };
+
   // 1. Secure Authentication Login Form
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
@@ -482,6 +551,54 @@ document.addEventListener('DOMContentLoaded', () => {
         if (statTk) statTk.textContent = `${data.stats.totalTickets || 0} (${data.stats.openTickets || 0} open)`;
         const statBl = document.getElementById('stat-blog');
         if (statBl) statBl.textContent = data.stats.totalBlogPosts || 0;
+
+        // Render Chart.js
+        if (window.Chart && document.getElementById('analyticsChart')) {
+          const ctx = document.getElementById('analyticsChart').getContext('2d');
+          if (window.analyticsChartInstance) {
+            window.analyticsChartInstance.destroy();
+          }
+          window.analyticsChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: ['Products', 'Dealers', 'Enquiries', 'Callbacks', 'Tickets', 'Blog Posts'],
+              datasets: [{
+                label: 'System Metrics',
+                data: [
+                  data.stats.totalProducts || 0,
+                  data.stats.totalDealers || 0,
+                  data.stats.totalEnquiries || 0,
+                  data.stats.totalCallbacks || 0,
+                  data.stats.totalTickets || 0,
+                  data.stats.totalBlogPosts || 0
+                ],
+                backgroundColor: [
+                  'rgba(54, 162, 235, 0.6)',
+                  'rgba(75, 192, 192, 0.6)',
+                  'rgba(255, 206, 86, 0.6)',
+                  'rgba(153, 102, 255, 0.6)',
+                  'rgba(255, 99, 132, 0.6)',
+                  'rgba(201, 203, 207, 0.6)'
+                ],
+                borderColor: [
+                  'rgb(54, 162, 235)',
+                  'rgb(75, 192, 192)',
+                  'rgb(255, 206, 86)',
+                  'rgb(153, 102, 255)',
+                  'rgb(255, 99, 132)',
+                  'rgb(201, 203, 207)'
+                ],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: { beginAtZero: true }
+              }
+            }
+          });
+        }
       }
     } catch (e) {
       console.error('Stats loading error', e);
@@ -749,6 +866,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Delivery Target:</strong> ${e.delivery_location}</p>
             <p style="background:var(--theme-bg); padding:0.75rem; border-radius:4px; border:1px solid var(--theme-border); margin:0.5rem 0;"><strong>Requested Items:</strong> ${e.items_summary}</p>
             <p><strong>Remarks:</strong> <em>${e.remarks || 'None'}</em></p>
+            <div style="margin-top: 1rem; border-top: 1px solid var(--theme-border); padding-top: 1rem; text-align: right;">
+              <a href="/quote.html?id=${e.id}" target="_blank" class="admin-cta-btn" style="display:inline-block; padding:0.5rem 1rem; font-size:0.8rem;"><i class="fa-solid fa-file-invoice"></i> Generate Quote</a>
+            </div>
           `;
           adminEnquiriesList.appendChild(card);
         });
@@ -954,6 +1074,100 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       alert('Failed to delete blog post.');
     }
+  };
+  // ============================================================
+  // TESTIMONIALS ADMIN
+  // ============================================================
+  async function loadAdminTestimonials() {
+    const listEl = document.getElementById('admin-testimonials-list');
+    if (!listEl) return;
+    try {
+      const res = await fetch(window.API_BASE_URL + '/api/testimonials');
+      const data = await res.json();
+      if (data.success && data.testimonials.length > 0) {
+        listEl.innerHTML = data.testimonials.map(t => {
+          return `
+          <div style="background:var(--theme-card); border:1px solid var(--theme-border); padding:1rem; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h4 style="margin:0; font-size:1rem; color:var(--theme-text);">${t.name} <span style="font-size:0.8rem; color:var(--theme-text-muted); font-weight:normal;">- ${t.company}</span></h4>
+              <p style="margin:0.25rem 0 0 0; font-size:0.85rem; color:var(--theme-text-muted);">${t.rating} Stars | ${new Date(t.created_at).toLocaleDateString()}</p>
+              <p style="margin:0.5rem 0 0 0; font-size:0.9rem; max-width:500px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">"${t.content}"</p>
+            </div>
+            <div>
+              <button onclick="deleteTestimonial(${t.id})" class="cta-btn" style="padding:0.35rem 0.75rem; font-size:0.7rem; background:hsl(0,75%,50%);"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>`;
+        }).join('');
+      } else {
+        listEl.innerHTML = '<p style="color:var(--theme-text-muted); text-align:center;">No testimonials added yet.</p>';
+      }
+    } catch (e) {
+      listEl.innerHTML = '<p style="color:hsl(0,75%,50%);">Failed to load testimonials.</p>';
+    }
+  }
+
+  const testimonialForm = document.getElementById('testimonialForm');
+  if (testimonialForm) {
+    testimonialForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = testimonialForm.querySelector('button[type="submit"]');
+      const oldHtml = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
+      btn.disabled = true;
+
+      const body = {
+        name: document.getElementById('testiName').value,
+        company: document.getElementById('testiCompany').value,
+        rating: document.getElementById('testiRating').value,
+        content: document.getElementById('testiContent').value
+      };
+
+      try {
+        const res = await fetch(window.API_BASE_URL + '/api/admin/testimonials', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (data.success) {
+          testimonialForm.reset();
+          loadAdminTestimonials();
+        } else {
+          alert(data.message || 'Failed to add testimonial.');
+        }
+      } catch (err) {
+        alert('Network error.');
+      } finally {
+        btn.innerHTML = oldHtml;
+        btn.disabled = false;
+      }
+    });
+  }
+
+  window.deleteTestimonial = async function(id) {
+    if (!confirm('Delete this testimonial?')) return;
+    try {
+      const res = await fetch(`${window.API_BASE_URL}/api/admin/testimonials/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if (data.success) {
+        loadAdminTestimonials();
+      } else {
+        alert(data.message);
+      }
+    } catch (e) {
+      alert('Failed to delete testimonial.');
+    }
+  };
+
+  // Add loadAdminTestimonials to showDashboard initialization
+  const originalShowDashboard = showDashboard;
+  showDashboard = function() {
+    originalShowDashboard();
+    loadAdminTestimonials();
   };
 
 });

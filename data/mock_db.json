@@ -288,7 +288,7 @@
       "slug": "how-to-maintain-laser-printer",
       "category": "Tech Tips",
       "excerpt": "Learn the essential maintenance routines that can extend your laser printer's life by 3-5 years and reduce costly repairs.",
-      "content": "Regular maintenance is key to keeping your laser printer running smoothly. Here are the top practices every business should follow:\n\n**1. Clean the Paper Path Monthly**\nDust and toner residue accumulate in the paper path, causing jams and print quality issues. Use a lint-free cloth and compressed air to clean rollers and guides.\n\n**2. Replace the Fuser Assembly on Schedule**\nThe fuser unit has a rated lifespan (typically 50,000-100,000 pages). Don't wait for it to fail — proactive replacement prevents paper jams and toner smudging.\n\n**3. Use Genuine Toner Cartridges**\nWhile compatible cartridges may seem cost-effective, they can damage the drum unit and void your warranty. Always use OEM-certified consumables.\n\n**4. Keep Firmware Updated**\nManufacturers release firmware updates that fix bugs and improve print quality. Check your printer's admin panel quarterly.\n\n**5. Store Paper Properly**\nHumid or wrinkled paper causes jams. Store paper in a cool, dry place and fan sheets before loading.\n\nFor professional printer maintenance and AMC services, contact Vell Print Technology at 9894833377.",
+      "content": "Regular maintenance is key to keeping your laser printer running smoothly. Here are the top practices every business should follow:\n\n**1. Clean the Paper Path Monthly**\nDust and toner residue accumulate in the paper path, causing jams and print quality issues. Use a lint-free cloth and compressed air to clean rollers and guides.\n\n**2. Replace the Fuser Assembly on Schedule**\nThe fuser unit has a rated lifespan (typically 50,000-100,000 pages). Don't wait for it to fail \u2014 proactive replacement prevents paper jams and toner smudging.\n\n**3. Use Genuine Toner Cartridges**\nWhile compatible cartridges may seem cost-effective, they can damage the drum unit and void your warranty. Always use OEM-certified consumables.\n\n**4. Keep Firmware Updated**\nManufacturers release firmware updates that fix bugs and improve print quality. Check your printer's admin panel quarterly.\n\n**5. Store Paper Properly**\nHumid or wrinkled paper causes jams. Store paper in a cool, dry place and fan sheets before loading.\n\nFor professional printer maintenance and AMC services, contact Vell Print Technology at 9894833377.",
       "image_path": "/uploads/mock-offer1.jpg",
       "author": "Vell Print Technology",
       "created_at": "2026-06-25T10:00:00.000Z"
@@ -314,6 +314,24 @@
       "image_path": "/uploads/mock-gallery1.jpg",
       "author": "Vell Print Technology",
       "created_at": "2026-06-18T09:15:00.000Z"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": 1,
+      "name": "Karthik R.",
+      "company": "TechVision India",
+      "content": "Vell Print Technology has been our go-to partner for all our IT hardware needs. Their service is incredibly fast and their refurbished laptops are top-notch.",
+      "rating": 5,
+      "created_at": "2023-10-12T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Priya S.",
+      "company": "Creative Designs Co.",
+      "content": "We had an urgent requirement for high-end printers for our design studio. They delivered and installed the equipment within 24 hours. Excellent support!",
+      "rating": 5,
+      "created_at": "2023-11-05T14:30:00Z"
     }
   ]
 }

@@ -77,6 +77,11 @@
         <form id="filterForm" style="background:transparent; border:none; padding:0; box-shadow:none; gap:1.25rem;">
           
           <div class="form-group">
+            <label for="searchQuery">Search Product</label>
+            <input type="text" id="searchQuery" name="searchQuery" placeholder="e.g. Printer, Ink..." style="width:100%; border:1px solid var(--theme-border); border-radius:4px; padding:0.5rem; background:var(--theme-bg); color:var(--theme-text);">
+          </div>
+
+          <div class="form-group">
             <label for="filterBrand">Brand</label>
             <select id="filterBrand" name="brand_id">
               <option value="">All Brands</option>
@@ -458,5 +463,8 @@
       fetchCatalog();
     });
   </script>
+  <a href="https://wa.me/919894833377" class="whatsapp-fab" target="_blank" title="Chat with us on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
 </body>
 </html>

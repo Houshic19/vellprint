@@ -153,9 +153,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  async function fetchTestimonials() {
+    const testiGrid = document.getElementById('testimonials-grid');
+    if (!testiGrid) return;
+    try {
+      const response = await fetch(window.API_BASE_URL + '/api/testimonials');
+      const data = await response.json();
+      if (data.success && data.testimonials.length > 0) {
+        testiGrid.innerHTML = '';
+        data.testimonials.forEach(t => {
+          const stars = Array(t.rating).fill('<i class="fa-solid fa-star"></i>').join('');
+          testiGrid.innerHTML += `
+            <div class="service-card" style="padding:2.5rem;">
+              <div style="color:var(--color-secondary); font-size:1.5rem; margin-bottom:1rem;">
+                ${stars}
+              </div>
+              <p style="font-style:italic; line-height:1.6; color:var(--theme-text-muted); margin-bottom:1.5rem;">"${t.content}"</p>
+              <strong style="font-size:0.9rem; color:var(--theme-text);">- ${t.name}, ${t.company}</strong>
+            </div>
+          `;
+        });
+      } else {
+        testiGrid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--theme-text-muted);">
+            <i class="fa-solid fa-star" style="font-size: 2.5rem; margin-bottom: 1rem;"></i>
+            <p>No testimonials added yet.</p>
+          </div>
+        `;
+      }
+    } catch (err) {
+      testiGrid.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--theme-text-muted);">
+          <p>Failed to load testimonials.</p>
+        </div>
+      `;
+    }
+  }
+
   // Call API loaders
   fetchOffers();
   fetchGallery();
+  fetchTestimonials();
 
   // 6. Scroll Reveal Intersection Observer Logic (Trendy dynamic reveals)
   const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');

@@ -1440,6 +1440,64 @@ async function deleteBlogPost(id) {
   }
 }
 
+// ============================================================
+// TESTIMONIALS
+// ============================================================
+async function getTestimonials() {
+  if (DB_TYPE === 'oracle') {
+    const conn = await pool.getConnection();
+    try {
+      const res = await conn.execute(`SELECT * FROM testimonials ORDER BY created_at DESC`);
+      return res.rows;
+    } finally { await conn.close(); }
+  } else {
+    const data = readMockData();
+    return data.testimonials || [];
+  }
+}
+
+async function addTestimonial(testi) {
+  if (DB_TYPE === 'oracle') {
+    const conn = await pool.getConnection();
+    try {
+      const sql = `INSERT INTO testimonials (name, company, content, rating)
+                   VALUES (:name, :company, :content, :rating)
+                   RETURNING id INTO :id`;
+      const binds = {
+        name: testi.name,
+        company: testi.company || '',
+        content: testi.content,
+        rating: testi.rating || 5,
+        id: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+      };
+      const res = await conn.execute(sql, binds);
+      await conn.commit();
+      return res.outBinds.id[0];
+    } finally { await conn.close(); }
+  } else {
+    const data = readMockData();
+    if (!data.testimonials) data.testimonials = [];
+    const newId = data.testimonials.length > 0 ? Math.max(...data.testimonials.map(t => t.id)) + 1 : 1;
+    data.testimonials.push({ id: newId, ...testi, created_at: new Date().toISOString() });
+    writeMockData(data);
+    return newId;
+  }
+}
+
+async function deleteTestimonial(id) {
+  if (DB_TYPE === 'oracle') {
+    const conn = await pool.getConnection();
+    try {
+      await conn.execute('DELETE FROM testimonials WHERE id = :id', { id });
+      await conn.commit();
+    } finally { await conn.close(); }
+  } else {
+    const data = readMockData();
+    data.testimonials = (data.testimonials || []).filter(t => t.id !== id);
+    writeMockData(data);
+  }
+}
+
 module.exports = {
   initDB,
   getAdminUser,
@@ -1473,5 +1531,8 @@ module.exports = {
   getBlogPosts,
   getBlogPostBySlug,
   addBlogPost,
-  deleteBlogPost
+  deleteBlogPost,
+  getTestimonials,
+  addTestimonial,
+  deleteTestimonial
 };
