@@ -281,12 +281,8 @@
             renderCatalog(data.products);
           }
         } catch (err) {
-          catalogGrid.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--theme-text-muted);">
-              <i class="fa-solid fa-triangle-exclamation" style="font-size:3rem; margin-bottom:1rem; color:var(--color-primary);"></i>
-              <p>Failed to retrieve spares catalogue. Please reload the page.</p>
-            </div>
-          `;
+          // If the backend is down, redirect to the maintenance page
+          window.location.href = '/maintenance.html';
         }
       }
 
