@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" class="light-theme">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+  
+  <!-- SSR SEO Tags -->
+  <title>{{META_TITLE}}</title>
+  <meta name="description" content="{{META_DESCRIPTION}}">
+  <meta name="theme-color" content="#FF5722">
+  
+  <link rel="stylesheet" href="/css/style.css?v=17">
+  
+  <!-- Async Fonts & Icon assets -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+
+  <!-- Dynamic JSON-LD SEO Schemas injected by SSR -->
+  <script type="application/ld+json">
+    {{BREADCRUMB_SCHEMA}}
+  </script>
+  <script type="application/ld+json">
+    {{PRODUCT_SCHEMA}}
+  </script>
+
+  
+  <script src="/config.js"></script>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="scrolled">
+    <div class="container nav-wrapper">
+      <a href="/" class="logo">
+        <img src="/logo.png" alt="Vell Print Technology Logo" class="logo-img">
+      </a>
+      
+      <nav id="navbar">
+        <ul>
+          <li><a href="/#home">Home</a></li>
+          <li><a href="/#services">Services</a></li>
+          <li><a href="/#motto">Our Motto</a></li>
+          <li><a href="/#partners">Partners</a></li>
+          <li><a href="/store" style="color: var(--color-primary); font-weight:700;"><i class="fa-solid fa-store"></i> Dealer Store</a></li>
+          <li><a href="/cart" style="position:relative;"><i class="fa-solid fa-cart-shopping"></i> Cart <span id="cart-badge" style="display:none; background:var(--color-primary); color:white; font-size:0.7rem; padding: 2px 6px; border-radius:50%; position:absolute; top:-8px; right:-12px;">0</span></a></li>
+          <li><a href="/register"><i class="fa-solid fa-user-plus"></i> Register</a></li>
+          
+        </ul>
+      </nav>
+      
+      <div style="display:flex; align-items:center; gap:1.25rem;">
+        
+        <div class="menu-toggle" id="mobile-menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Product Detail Container -->
+  <div class="admin-container" style="max-width:1100px; margin-top:9.5rem;">
+    
+    <!-- Breadcrumb Menu -->
+    <div class="reveal" style="font-size:0.85rem; margin-bottom:2rem; color:var(--theme-text-muted);">
+      <a href="/">Home</a> / <a href="/store">Spare Parts</a> / <span id="product-breadcrumb-active" class="gradient-text" style="font-weight:700;">Loading...</span>
+    </div>
+
+    <!-- Product Layout Grid -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:3.5rem; align-items:start; margin-bottom:4rem;" class="reveal">
+      
+      <!-- Left: Image Box -->
+      <div style="background:var(--theme-card); border:1px solid var(--theme-border); border-radius:var(--border-radius-lg); padding:2rem; text-align:center; box-shadow:0 8px 30px var(--theme-shadow);">
+        <img id="product-detail-img" src="/uploads/placeholder.jpg" alt="Product Image" style="max-width:100%; max-height:400px; object-fit:contain; border-radius:8px;">
+      </div>
+
+      <!-- Right: Technical Details Panel -->
+      <div>
+        <span id="product-detail-brand" style="font-size:0.85rem; font-weight:700; text-transform:uppercase; color:var(--color-primary); letter-spacing:0.05em;">Brand</span>
+        <h1 id="product-detail-name" style="font-size:2.25rem; margin:0.25rem 0 1rem 0; line-height:1.2;">{{PRODUCT_NAME}}</h1>
+        
+        <div style="display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+          <span id="product-detail-availability" class="offer-badge" style="position:static; padding:0.35rem 0.85rem; font-size:0.8rem; background:hsl(120, 70%, 45%); box-shadow:none;">In Stock</span>
+          <span id="product-detail-condition" class="offer-badge" style="position:static; padding:0.35rem 0.85rem; font-size:0.8rem; background:var(--color-primary); box-shadow:none;">OEM Genuine</span>
+        </div>
+
+        <p id="product-detail-shortdesc" style="color:var(--theme-text-muted); font-size:1.05rem; margin-bottom:2rem; line-height:1.6;">Short description...</p>
+        
+        <!-- Cart Controls -->
+        <div class="contact-form-wrapper" style="padding:1.5rem; margin-bottom:2rem; background:var(--theme-card); border:1px solid var(--theme-border); border-radius:var(--border-radius-md); display:flex; flex-direction:column; gap:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.9rem; color:var(--theme-text-muted);"><strong>Minimum Order Qty (MOQ):</strong> <span id="product-detail-moq">1</span> <span id="product-detail-unit">PCS</span></span>
+          </div>
+          
+          <div style="display:flex; gap:1rem; align-items:center;">
+            <div style="display:flex; align-items:center; border:1px solid var(--theme-border); border-radius:var(--border-radius-md); overflow:hidden;">
+              <button id="qty-minus" style="padding:0.75rem 1rem; background:transparent; border:none; color:var(--theme-text); cursor:pointer;"><i class="fa-solid fa-minus"></i></button>
+              <input type="number" id="qty-input" value="1" min="1" style="width:60px; text-align:center; border:none; background:transparent; color:var(--theme-text); -moz-appearance:textfield; min-height:auto;">
+              <button id="qty-plus" style="padding:0.75rem 1rem; background:transparent; border:none; color:var(--theme-text); cursor:pointer;"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            
+            <button id="addToCartBtn" class="cta-btn" style="flex-grow:1; min-height:48px;"><i class="fa-solid fa-cart-plus"></i> Add To Enquiry Cart</button>
+          </div>
+        </div>
+
+        <!-- Technical Specification Summary -->
+        <div style="font-size:0.85rem; display:flex; flex-direction:column; gap:0.5rem; color:var(--theme-text-muted);">
+          <span><strong>OEM Part Number:</strong> <span id="product-detail-oem">N/A</span></span>
+          <span><strong>Alternate Part Number:</strong> <span id="product-detail-alt">N/A</span></span>
+          <span><strong>HSN Code:</strong> <span id="product-detail-hsn">N/A</span></span>
+          <span><strong>Warranty:</strong> <span id="product-detail-warranty">N/A</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Section: Specs, Compatibilities & Long Desc -->
+    <div class="reveal" style="background:var(--theme-card); border:1px solid var(--theme-border); border-radius:var(--border-radius-lg); padding:3rem; margin-bottom:4rem; box-shadow:0 8px 30px var(--theme-shadow);">
+      <h3 class="gradient-text" style="font-size:1.5rem; margin-bottom:1.5rem; border-bottom:1px solid var(--theme-border); padding-bottom:0.75rem;"><i class="fa-solid fa-gears"></i> Technical Compatibility & Specifications</h3>
+      
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:3rem; align-items:start;">
+        <div>
+          <h4 style="margin-bottom:0.75rem;"><i class="fa-solid fa-list-check"></i> Compatible Printers & Systems</h4>
+          <ul id="compatibility-list" style="list-style:none; display:flex; flex-direction:column; gap:0.5rem; color:var(--theme-text-muted); font-size:0.95rem;">
+            <!-- Populated dynamically -->
+          </ul>
+        </div>
+        <div>
+          <h4 style="margin-bottom:0.75rem;"><i class="fa-solid fa-circle-info"></i> Product Overview</h4>
+          <p id="product-detail-longdesc" style="color:var(--theme-text-muted); font-size:0.95rem; line-height:1.6; margin-bottom:1.5rem;">Detailed description...</p>
+          
+          <h4 style="margin-bottom:0.5rem;"><i class="fa-solid fa-screwdriver"></i> Alternate Cross References</h4>
+          <div id="product-detail-specs" style="color:var(--theme-text-muted); font-size:0.9rem;">
+            <!-- Specs -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="reveal" style="margin-bottom:4rem;">
+      <h3 style="font-size:1.5rem; margin-bottom:1.5rem;"><i class="fa-solid fa-cubes"></i> Related Spare Components</h3>
+      <div id="related-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:2rem;">
+        <!-- Dynamic Related Cards -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <img src="/logo.png" alt="Vell Print Technology Logo" class="logo-img">
+        </a>
+        <p>Premium center for all custom computer assemblies, laptop upgrades, and printer sales & servicing in Saibabacolony, Coimbatore. Care for our customers.</p>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Services</h3>
+        <ul>
+          <li><a href="/#services">Printer Servicing</a></li>
+          <li><a href="/#services">System Sales</a></li>
+          <li><a href="/store">Dealer Store</a></li>
+          <li><a href="/#services">Custom PC Builds</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Core Links</h3>
+        <ul>
+          <li><a href="/#home">Home Profile</a></li>
+          <li><a href="/#services">Core Capabilities</a></li>
+          <li><a href="/store" style="color:var(--color-primary); font-weight:700;"><i class="fa-solid fa-store"></i> Dealer Store</a></li>
+          <li><a href="/#offers">Active Deals</a></li>
+          <li><a href="/#gallery">Production Portfolio</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h3>Operational Hub</h3>
+        <ul>
+          <li>Mon - Sat: 9:00 AM - 8:00 PM</li>
+          <li>N.S.R. Road, Coimbatore</li>
+          <li>GST Regd. Provider</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Vell Print Technology. All Rights Reserved. | Made by <a href="http://www.rexonsofttech.in" target="_blank" style="color:var(--color-primary); font-weight:700;">RexonSoftTech</a> (Contact: 7871654777)</p>
+      <div style="display:flex; gap:1.5rem; font-size: 1.2rem;">
+        <a href="tel:+919894833377"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="mailto:vellprint@gmail.com"><i class="fa-regular fa-envelope"></i></a>
+        <a href="/#home"><i class="fa-solid fa-arrow-up"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js?v=17"></script>
+  <!-- Hybrid Client-Side JS logic for product detail mapping -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const cartBadge = document.getElementById('cart-badge');
+      const qtyInput = document.getElementById('qty-input');
+      const qtyPlus = document.getElementById('qty-plus');
+      const qtyMinus = document.getElementById('qty-minus');
+      const addToCartBtn = document.getElementById('addToCartBtn');
+
+      // 1. Get Product Slug from URL path
+      const pathParts = window.location.pathname.split('/');
+      const seoUrl = pathParts[pathParts.length - 1];
+
+      let productData = null;
+
+      // Update Cart Badge Count
+      function updateCartBadge() {
+        const cart = JSON.parse(localStorage.getItem('vell_cart') || '[]');
+        const count = cart.reduce((sum, item) => sum + item.qty, 0);
+        if (count > 0) {
+          cartBadge.textContent = count;
+          cartBadge.style.display = 'inline-block';
+        } else {
+          cartBadge.style.display = 'none';
+        }
+      }
+      updateCartBadge();
+
+      // Load Product Info from database
+      async function loadProduct() {
+        try {
+          const res = await fetch(`/api/products/${seoUrl}`);
+          const data = await res.json();
+          if (data.success && data.product) {
+            productData = data.product;
+            populateDOM(data.product);
+            loadRelated(data.product.category_id, data.product.id);
+          } else {
+            window.location.href = '/store';
+          }
+        } catch (err) {
+          console.error('Error fetching product specs:', err);
+          window.location.href = '/store';
+        }
+      }
+
+      function populateDOM(p) {
+        document.getElementById('product-breadcrumb-active').textContent = p.name;
+        document.getElementById('product-detail-img').src = p.image_path;
+        document.getElementById('product-detail-img').alt = p.name;
+        document.getElementById('product-detail-brand').textContent = p.brand_name;
+        document.getElementById('product-detail-shortdesc').textContent = p.short_description;
+        document.getElementById('product-detail-moq').textContent = p.moq;
+        document.getElementById('product-detail-unit').textContent = p.unit;
+        document.getElementById('product-detail-oem').textContent = p.oem_part_number || 'N/A';
+        document.getElementById('product-detail-alt').textContent = p.alternate_part_number || 'N/A';
+        document.getElementById('product-detail-hsn').textContent = p.hsn_code || 'N/A';
+        document.getElementById('product-detail-warranty').textContent = p.warranty || 'N/A';
+        document.getElementById('product-detail-longdesc').textContent = p.long_description || 'No detailed overview provided.';
+        document.getElementById('product-detail-specs').textContent = p.tech_specifications || 'N/A';
+        document.getElementById('product-detail-availability').textContent = p.availability;
+        if (p.availability !== 'In Stock') {
+          document.getElementById('product-detail-availability').style.background = 'hsl(0, 75%, 45%)';
+        }
+
+        // Set initial quantity to MOQ
+        qtyInput.value = p.moq;
+
+        // Render compatibilities list
+        const compList = document.getElementById('compatibility-list');
+        compList.innerHTML = '';
+        if (p.compatibilities && p.compatibilities.length > 0) {
+          p.compatibilities.forEach(c => {
+            const li = document.createElement('li');
+            li.innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--color-primary);"></i> Compatible with <strong>${c.printer_brand} ${c.printer_model}</strong>`;
+            compList.appendChild(li);
+          });
+        } else {
+          compList.innerHTML = '<li><i class="fa-solid fa-circle-info"></i> Compatible with general systems.</li>';
+        }
+      }
+
+      // Quantity controls
+      qtyPlus.addEventListener('click', () => {
+        qtyInput.value = parseInt(qtyInput.value) + 1;
+      });
+      qtyMinus.addEventListener('click', () => {
+        const min = productData ? productData.moq : 1;
+        if (parseInt(qtyInput.value) > min) {
+          qtyInput.value = parseInt(qtyInput.value) - 1;
+        }
+      });
+      qtyInput.addEventListener('change', () => {
+        const min = productData ? productData.moq : 1;
+        if (parseInt(qtyInput.value) < min || isNaN(parseInt(qtyInput.value))) {
+          qtyInput.value = min;
+        }
+      });
+
+      // Add to Cart
+      addToCartBtn.addEventListener('click', () => {
+        if (!productData) return;
+        
+        let cart = JSON.parse(localStorage.getItem('vell_cart') || '[]');
+        const existing = cart.find(item => item.id === productData.id);
+        const qtyToAdd = parseInt(qtyInput.value);
+
+        if (existing) {
+          existing.qty += qtyToAdd;
+        } else {
+          cart.push({
+            id: productData.id,
+            name: productData.name,
+            part_number: productData.part_number,
+            sku: productData.sku,
+            moq: productData.moq,
+            unit: productData.unit,
+            image_path: productData.image_path,
+            qty: qtyToAdd
+          });
+        }
+
+        localStorage.setItem('vell_cart', JSON.stringify(cart));
+        updateCartBadge();
+
+        // Toast feedback
+        addToCartBtn.innerHTML = '<i class="fa-solid fa-check"></i> Added to Cart';
+        addToCartBtn.style.background = 'hsl(120, 70%, 45%)';
+        setTimeout(() => {
+          addToCartBtn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> Add To Enquiry Cart';
+          addToCartBtn.style.background = '';
+        }, 1500);
+      });
+
+      // Load related items
+      async function loadRelated(catId, currentId) {
+        try {
+          const res = await fetch(`/api/products?category_id=${catId}`);
+          const data = await res.json();
+          if (data.success) {
+            const grid = document.getElementById('related-grid');
+            grid.innerHTML = '';
+            const filtered = data.products.filter(p => p.id !== currentId).slice(0, 4);
+
+            if (filtered.length === 0) {
+              grid.innerHTML = '<p style="color:var(--theme-text-muted);">No similar spares available at this moment.</p>';
+              return;
+            }
+
+            filtered.forEach(p => {
+              const card = document.createElement('div');
+              card.className = 'offer-card active';
+              card.style.display = 'flex';
+              card.style.flexDirection = 'column';
+              card.innerHTML = `
+                <div class="offer-img-wrapper" style="background-image: url('${p.image_path}'); height:150px;"></div>
+                <div class="offer-details" style="padding:1.25rem; display:flex; flex-direction:column; flex-grow:1;">
+                  <span style="font-size:0.7rem; font-weight:700; text-transform:uppercase; color:var(--color-primary);">${p.brand_name}</span>
+                  <h3 style="font-size:1rem; margin:0.25rem 0 0.5rem 0; min-height:35px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${p.name}</h3>
+                  <a href="/store/product/${p.seo_url}" class="cta-btn" style="padding:0.4rem 0.8rem; text-align:center; font-size:0.8rem; background:transparent; border:1px solid var(--color-primary); color:var(--theme-text); box-shadow:none; margin-top:auto;"><i class="fa-solid fa-circle-info"></i> View Details</a>
+                </div>
+              `;
+              grid.appendChild(card);
+            });
+          }
+        } catch (err) {
+          console.error('Error loading related spares:', err);
+        }
+      }
+
+      loadProduct();
+    });
+  </script>
+</body>
+</html>

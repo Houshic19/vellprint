@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en" class="light-theme">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+  <title>Company Brochure & Service Catalogue | Vell Print Technology</title>
+  
+  <meta name="description" content="Download the official company profile and service brochure of Vell Print Technology — complete IT hardware solutions for businesses in Coimbatore.">
+  <meta name="theme-color" content="#FF5722">
+  
+  <link rel="stylesheet" href="/css/style.css?v=17">
+  
+  <!-- Async loading of Google Fonts & FontAwesome to prevent blocking -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+
+  <style>
+    /* ===== Brochure Page Styles ===== */
+
+    .brochure-download-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1.25rem 2rem;
+      background: var(--theme-card);
+      border: 1px solid var(--theme-border);
+      border-radius: var(--border-radius-lg);
+      margin-bottom: 2.5rem;
+      box-shadow: 0 4px 20px var(--theme-shadow);
+    }
+    .brochure-download-bar h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .brochure-download-bar .bar-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .brochure-download-bar .bar-actions .cta-btn {
+      font-size: 0.9rem;
+      padding: 0.6rem 1.25rem;
+    }
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #25d366, #128c7e) !important;
+    }
+    .btn-whatsapp:hover {
+      opacity: 0.9;
+    }
+
+    /* Brochure Content Wrapper */
+    #brochure-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Cover Section */
+    .brochure-cover {
+      text-align: center;
+      padding: 3.5rem 2rem;
+      background: linear-gradient(135deg, hsl(214, 80%, 50%), hsl(190, 70%, 45%));
+      border-radius: var(--border-radius-lg);
+      color: #fff;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .brochure-cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .brochure-cover .cover-logo {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      padding: 15px;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brochure-cover h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 0 0 0.5rem 0;
+      letter-spacing: -0.5px;
+      position: relative;
+      z-index: 1;
+    }
+    .brochure-cover .tagline {
+      font-size: 1.15rem;
+      font-weight: 400;
+      opacity: 0.9;
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brochure-cover .cover-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+      opacity: 0.85;
+      position: relative;
+      z-index: 1;
+    }
+    .brochure-cover .cover-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Brochure Sections */
+    .brochure-section {
+      margin-bottom: 3rem;
+    }
+    .brochure-section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid hsl(214, 80%, 50%);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    /* About Text */
+    .brochure-about p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--theme-text-muted);
+    }
+
+    /* Services Grid */
+    .brochure-services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.25rem;
+    }
+    .brochure-service-item {
+      background: var(--theme-card);
+      border: 1px solid var(--theme-border);
+      border-radius: var(--border-radius-md);
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .brochure-service-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px var(--theme-shadow);
+    }
+    .brochure-service-item .service-icon {
+      font-size: 2rem;
+      color: hsl(214, 80%, 50%);
+      margin-bottom: 0.75rem;
+    }
+    .brochure-service-item h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0 0 0.4rem 0;
+    }
+    .brochure-service-item p {
+      font-size: 0.8rem;
+      color: var(--theme-text-muted);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Industries Grid */
+    .brochure-industries-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+    .brochure-industry-item {
+      background: var(--theme-card);
+      border: 1px solid var(--theme-border);
+      border-radius: var(--border-radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background 0.2s;
+    }
+    .brochure-industry-item:hover {
+      background: hsl(214, 80%, 96%);
+    }
+    .brochure-industry-item i {
+      color: hsl(190, 70%, 45%);
+      font-size: 1.1rem;
+    }
+
+    /* Why Choose Us */
+    .brochure-reasons-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .brochure-reasons-list li {
+      background: var(--theme-card);
+      border: 1px solid var(--theme-border);
+      border-radius: var(--border-radius-md);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .brochure-reasons-list li .reason-icon {
+      font-size: 1.5rem;
+      color: hsl(214, 80%, 50%);
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .brochure-reasons-list li strong {
+      display: block;
+      font-family: 'Outfit', sans-serif;
+      margin-bottom: 0.15rem;
+    }
+
+    /* Partners Grid */
+    .brochure-partners-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+    .brochure-partner-item {
+      background: var(--theme-card);
+      border: 1px solid var(--theme-border);
+      border-radius: var(--border-radius-md);
+      padding: 1.25rem;
+      text-align: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      color: var(--theme-text);
+      transition: transform 0.2s;
+    }
+    .brochure-partner-item:hover {
+      transform: scale(1.05);
+    }
+    .brochure-partner-item i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: hsl(214, 80%, 50%);
+    }
+
+    /* Contact Section */
+    .brochure-contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .brochure-contact-card {
+      background: var(--theme-card);
+      border: 1px solid var(--theme-border);
+      border-radius: var(--border-radius-md);
+      padding: 1.5rem;
+    }
+    .brochure-contact-card h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0 0 0.75rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: hsl(214, 80%, 50%);
+    }
+    .brochure-contact-card p,
+    .brochure-contact-card a {
+      font-size: 0.9rem;
+      color: var(--theme-text-muted);
+      line-height: 1.7;
+      margin: 0;
+      display: block;
+    }
+    .brochure-contact-card a:hover {
+      color: hsl(214, 80%, 50%);
+    }
+
+    /* Divider */
+    .brochure-divider {
+      border: none;
+      height: 1px;
+      background: var(--theme-border);
+      margin: 2.5rem 0;
+    }
+
+    /* ===== Print Styles ===== */
+    @media print {
+      header,
+      footer,
+      .brochure-download-bar {
+        display: none !important;
+      }
+      body {
+        background: #fff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .admin-container {
+        margin-top: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+      }
+      #brochure-content {
+        max-width: 100% !important;
+      }
+      .brochure-cover {
+        border-radius: 0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .brochure-service-item,
+      .brochure-industry-item,
+      .brochure-reasons-list li,
+      .brochure-partner-item,
+      .brochure-contact-card {
+        break-inside: avoid;
+        box-shadow: none !important;
+      }
+      .brochure-service-item:hover,
+      .brochure-partner-item:hover {
+        transform: none !important;
+      }
+      .brochure-section {
+        break-inside: avoid;
+      }
+    }
+
+    /* ===== Mobile Responsive ===== */
+    @media (max-width: 768px) {
+      .brochure-cover h1 {
+        font-size: 1.75rem;
+      }
+      .brochure-cover .tagline {
+        font-size: 1rem;
+      }
+      .brochure-cover .cover-meta {
+        gap: 1rem;
+        font-size: 0.8rem;
+      }
+      .brochure-services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .brochure-industries-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .brochure-partners-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .brochure-contact-grid {
+        grid-template-columns: 1fr;
+      }
+      .brochure-download-bar {
+        padding: 1rem 1.25rem;
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+      .brochure-download-bar .bar-actions {
+        justify-content: center;
+      }
+    }
+    @media (max-width: 480px) {
+      .brochure-services-grid {
+        grid-template-columns: 1fr;
+      }
+      .brochure-industries-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .brochure-partners-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+
+  <script src="/config.js"></script>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="scrolled">
+    <div class="container nav-wrapper">
+      <a href="/" class="logo">
+        <img src="/logo.png" alt="Vell Print Technology Logo" class="logo-img">
+      </a>
+      
+      <nav id="navbar">
+        <ul>
+          <li><a href="/#home">Home</a></li>
+          <li><a href="/#services">Services</a></li>
+          <li><a href="/#motto">Our Motto</a></li>
+          <li><a href="/#partners">Partners</a></li>
+          <li><a href="/store"><i class="fa-solid fa-store"></i> Dealer Store</a></li>
+          <li><a href="/cart" style="position:relative;"><i class="fa-solid fa-cart-shopping"></i> Cart <span id="cart-badge" style="display:none; background:var(--color-primary); color:white; font-size:0.7rem; padding: 2px 6px; border-radius:50%; position:absolute; top:-8px; right:-12px;">0</span></a></li>
+          <li><a href="/register"><i class="fa-solid fa-user-plus"></i> Register</a></li>
+          
+        </ul>
+      </nav>
+      
+      <div style="display:flex; align-items:center; gap:1.25rem;">
+        
+        <div class="menu-toggle" id="mobile-menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Brochure Container -->
+  <div class="admin-container" style="max-width:1000px; margin-top:9.5rem;">
+
+    <!-- Download / Action Bar -->
+    <div class="brochure-download-bar reveal">
+      <h2><i class="fa-solid fa-book-open" style="color: var(--color-primary);"></i> Company Profile &amp; Service Brochure</h2>
+      <div class="bar-actions">
+        <button class="cta-btn" onclick="window.print()">
+          <i class="fa-solid fa-print"></i> Print / Save as PDF
+        </button>
+        <a class="cta-btn btn-whatsapp" href="https://wa.me/?text=Check%20out%20Vell%20Print%20Technology%20Company%20Brochure%3A%20https%3A%2F%2Fvellprint.in%2Fbrochure" target="_blank" rel="noopener">
+          <i class="fa-brands fa-whatsapp"></i> Share via WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <!-- Brochure Content -->
+    <div id="brochure-content">
+
+      <!-- ===== COVER SECTION ===== -->
+      <div class="brochure-cover reveal">
+        <img src="/logo.png" alt="Vell Print Technology" class="cover-logo">
+        <h1>Vell Print Technology</h1>
+        <p class="tagline">Complete IT Hardware Solutions for Businesses</p>
+        <div class="cover-meta">
+          <span><i class="fa-solid fa-calendar-check"></i> Established 2015</span>
+          <span><i class="fa-solid fa-certificate"></i> GST: 33CUGPK5529L1ZC</span>
+          <span><i class="fa-solid fa-location-dot"></i> Coimbatore, Tamil Nadu</span>
+        </div>
+      </div>
+
+      <!-- ===== ABOUT SECTION ===== -->
+      <div class="brochure-section brochure-about reveal">
+        <h3 class="brochure-section-title gradient-text"><i class="fa-solid fa-building"></i> About Our Company</h3>
+        <p>
+          Vell Print Technology is a trusted, full-service IT hardware solutions provider based in Coimbatore, Tamil Nadu. We specialize in enterprise-grade printer sales and servicing, custom desktop and laptop configurations, workstation deployments, and comprehensive networking solutions. With deep expertise across leading brands and a commitment to genuine products, we serve businesses of all sizes — from ambitious startups to large-scale enterprises. Our certified technicians, rapid turnaround times, and competitive pricing make us the preferred technology partner for organizations across South India.
+        </p>
+      </div>
+
+      <hr class="brochure-divider">
+
+      <!-- ===== OUR SERVICES ===== -->
+      <div class="brochure-section reveal">
+        <h3 class="brochure-section-title gradient-text"><i class="fa-solid fa-gears"></i> Our Services</h3>
+        <div class="brochure-services-grid">
+
+          <div class="brochure-service-item">
+            <div class="service-icon"><i class="fa-solid fa-print"></i></div>
+            <h4>Printer Sales</h4>
+            <p>New inkjet, laser & multifunction printers from HP, Epson, Canon & Brother for every business need.</p>
+          </div>
+
+          <div class="brochure-service-item">
+            <div class="service-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+            <h4>Printer Repair</h4>
+            <p>Expert diagnostics, printhead servicing, roller replacement & maintenance for all major brands.</p>
+          </div>
+
+          <div class="brochure-service-item">
+            <div class="service-icon"><i class="fa-solid fa-laptop"></i></div>
+            <h4>Laptop Sales</h4>
+            <p>Business & gaming laptops from Dell, Lenovo, HP and more — configured to your specifications.</p>
+          </div>
+
+          <div class="brochure-service-item">
+            <div class="service-icon"><i class="fa-solid fa-desktop"></i></div>
+            <h4>Desktop Sales</h4>
+            <p>Pre-built and custom desktop PCs for offices, trading terminals, and creative workloads.</p>
+          </div>
+
+          <div class="brochure-service-item">
+            <div class="service-icon"><i class="fa-solid fa-server"></i></div>
+            <h4>Workstations</h4>
+            <p>High-performance workstation builds for engineering, design, video editing & data-intensive tasks.</p>
+          </div>
+
+          <div class="brochure-service-item">
+            <div class="service-icon"><i class="fa-solid fa-network-wired"></i></div>
+            <h4>Networking</h4>
+            <p>LAN/WAN setup, structured cabling, switches, routers, Wi-Fi access points & firewall solutions.</p>
+          </div>
+
+          <div class="brochure-service-item">
+            <div class="service-icon"><i class="fa-solid fa-keyboard"></i></div>
+            <h4>Accessories</h4>
+            <p>Keyboards, mice, webcams, monitors, UPS systems, cables & peripherals from trusted brands.</p>
+          </div>
+
+          <div class="brochure-service-item">
+            <div class="service-icon"><i class="fa-solid fa-recycle"></i></div>
+            <h4>Refurbished Products</h4>
+            <p>Quality-tested, certified refurbished laptops, desktops & printers at significantly lower costs.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <hr class="brochure-divider">
+
+      <!-- ===== INDUSTRIES WE SERVE ===== -->
+      <div class="brochure-section reveal">
+        <h3 class="brochure-section-title gradient-text"><i class="fa-solid fa-industry"></i> Industries We Serve</h3>
+        <div class="brochure-industries-grid">
+          <div class="brochure-industry-item"><i class="fa-solid fa-landmark"></i> Banking</div>
+          <div class="brochure-industry-item"><i class="fa-solid fa-hospital"></i> Healthcare</div>
+          <div class="brochure-industry-item"><i class="fa-solid fa-graduation-cap"></i> Education</div>
+          <div class="brochure-industry-item"><i class="fa-solid fa-gears"></i> Manufacturing</div>
+          <div class="brochure-industry-item"><i class="fa-solid fa-bag-shopping"></i> Retail</div>
+          <div class="brochure-industry-item"><i class="fa-solid fa-building"></i> Corporate</div>
+          <div class="brochure-industry-item"><i class="fa-solid fa-landmark-flag"></i> Government</div>
+          <div class="brochure-industry-item"><i class="fa-solid fa-bell-concierge"></i> Hospitality</div>
+          <div class="brochure-industry-item"><i class="fa-solid fa-microchip"></i> IT Companies</div>
+          <div class="brochure-industry-item"><i class="fa-solid fa-briefcase"></i> SMEs</div>
+        </div>
+      </div>
+
+      <hr class="brochure-divider">
+
+      <!-- ===== WHY CHOOSE US ===== -->
+      <div class="brochure-section reveal">
+        <h3 class="brochure-section-title gradient-text"><i class="fa-solid fa-trophy"></i> Why Choose Us</h3>
+        <ul class="brochure-reasons-list">
+          <li>
+            <i class="fa-solid fa-shield-halved reason-icon"></i>
+            <div>
+              <strong>Enterprise Experience</strong>
+              Years of proven track record serving businesses of all sizes with reliable IT hardware solutions and support.
+            </div>
+          </li>
+          <li>
+            <i class="fa-solid fa-user-gear reason-icon"></i>
+            <div>
+              <strong>Certified Technicians</strong>
+              Our skilled team holds brand certifications and undergoes regular training to deliver expert-level service.
+            </div>
+          </li>
+          <li>
+            <i class="fa-solid fa-box-open reason-icon"></i>
+            <div>
+              <strong>100% Genuine Products</strong>
+              We source exclusively from authorized distributors — every product comes with full manufacturer warranty.
+            </div>
+          </li>
+          <li>
+            <i class="fa-solid fa-tags reason-icon"></i>
+            <div>
+              <strong>Affordable Pricing</strong>
+              Competitive B2B pricing with volume discounts, transparent quotes, and no hidden charges.
+            </div>
+          </li>
+          <li>
+            <i class="fa-solid fa-headset reason-icon"></i>
+            <div>
+              <strong>Quick Support</strong>
+              Rapid response times with on-site and remote support options to minimize your business downtime.
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <hr class="brochure-divider">
+
+      <!-- ===== OUR PARTNERS ===== -->
+      <div class="brochure-section reveal">
+        <h3 class="brochure-section-title gradient-text"><i class="fa-solid fa-handshake"></i> Our Technology Partners</h3>
+        <div class="brochure-partners-grid">
+          <div class="brochure-partner-item"><i class="fa-solid fa-circle-nodes"></i> HP</div>
+          <div class="brochure-partner-item"><i class="fa-solid fa-circle-nodes"></i> Epson</div>
+          <div class="brochure-partner-item"><i class="fa-solid fa-circle-nodes"></i> Canon</div>
+          <div class="brochure-partner-item"><i class="fa-solid fa-circle-nodes"></i> Brother</div>
+          <div class="brochure-partner-item"><i class="fa-solid fa-circle-nodes"></i> Dell</div>
+          <div class="brochure-partner-item"><i class="fa-solid fa-circle-nodes"></i> Lenovo</div>
+          <div class="brochure-partner-item"><i class="fa-solid fa-circle-nodes"></i> Cisco</div>
+          <div class="brochure-partner-item"><i class="fa-solid fa-circle-nodes"></i> TP-Link</div>
+          <div class="brochure-partner-item"><i class="fa-solid fa-circle-nodes"></i> Intel</div>
+        </div>
+      </div>
+
+      <hr class="brochure-divider">
+
+      <!-- ===== CONTACT INFORMATION ===== -->
+      <div class="brochure-section reveal">
+        <h3 class="brochure-section-title gradient-text"><i class="fa-solid fa-address-book"></i> Contact Information</h3>
+        <div class="brochure-contact-grid">
+
+          <div class="brochure-contact-card">
+            <h4><i class="fa-solid fa-location-dot"></i> Office Address</h4>
+            <p>330 B1, Periya Suppannan Street,<br>N.S.R. Road, Saibabacolony,<br>Coimbatore — 641011,<br>Tamil Nadu, India</p>
+          </div>
+
+          <div class="brochure-contact-card">
+            <h4><i class="fa-solid fa-phone"></i> Phone & WhatsApp</h4>
+            <a href="tel:+919894833377">+91 98948 33377</a>
+            <p style="margin-top:0.5rem; font-size:0.8rem; color:var(--theme-text-muted);">Call or WhatsApp us anytime</p>
+          </div>
+
+          <div class="brochure-contact-card">
+            <h4><i class="fa-solid fa-envelope"></i> Email</h4>
+            <a href="mailto:admin@vellprint.in">admin@vellprint.in</a>
+            <a href="mailto:kavitha@vellprint.in">kavitha@vellprint.in</a>
+            <a href="mailto:vellprint@gmail.com">vellprint@gmail.com</a>
+          </div>
+
+          <div class="brochure-contact-card">
+            <h4><i class="fa-solid fa-clock"></i> Business Hours</h4>
+            <p><strong>Monday — Saturday</strong><br>9:00 AM — 8:00 PM</p>
+            <p style="margin-top:0.5rem; font-size:0.8rem; color:var(--theme-text-muted);">Sunday: Closed</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Brochure Footer Stamp -->
+      <div style="text-align:center; padding:2.5rem 1rem; margin-top:1rem; color:var(--theme-text-muted); font-size:0.85rem;">
+        <p style="margin:0;">
+          <strong style="font-family:'Outfit',sans-serif; font-size:1rem; color:var(--theme-text);">Vell Print Technology</strong><br>
+          Your Trusted IT Hardware Partner in Coimbatore<br>
+          <span style="font-size:0.8rem;">www.vellprint.in &nbsp;|&nbsp; GST: 33CUGPK5529L1ZC</span>
+        </p>
+      </div>
+
+    </div><!-- end #brochure-content -->
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <img src="/logo.png" alt="Vell Print Technology Logo" class="logo-img">
+        </a>
+        <p>Premium center for all custom computer assemblies, laptop upgrades, and printer sales & servicing in Saibabacolony, Coimbatore. Care for our customers.</p>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Services</h3>
+        <ul>
+          <li><a href="/#services">Printer Servicing</a></li>
+          <li><a href="/#services">System Sales</a></li>
+          <li><a href="/store">Dealer Store</a></li>
+          <li><a href="/#services">Custom PC Builds</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Core Links</h3>
+        <ul>
+          <li><a href="/#home">Home Profile</a></li>
+          <li><a href="/#services">Core Capabilities</a></li>
+          <li><a href="/store" style="color:var(--color-primary); font-weight:700;"><i class="fa-solid fa-store"></i> Dealer Store</a></li>
+          <li><a href="/#offers">Active Deals</a></li>
+          <li><a href="/#gallery">Production Portfolio</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h3>Operational Hub</h3>
+        <ul>
+          <li>Mon - Sat: 9:00 AM - 8:00 PM</li>
+          <li>N.S.R. Road, Coimbatore</li>
+          <li>GST Regd. Provider</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Vell Print Technology. All Rights Reserved. | Made by <a href="http://www.rexonsofttech.in" target="_blank" style="color:var(--color-primary); font-weight:700;">RexonSoftTech</a> (Contact: 7871654777)</p>
+      <div style="display:flex; gap:1.5rem; font-size: 1.2rem;">
+        <a href="tel:+919894833377"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="mailto:vellprint@gmail.com"><i class="fa-regular fa-envelope"></i></a>
+        <a href="/#home"><i class="fa-solid fa-arrow-up"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js?v=17"></script>
+</body>
+</html>

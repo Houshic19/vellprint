@@ -1,0 +1,319 @@
+{
+  "admin_users": [
+    {
+      "username": "admin",
+      "password_hash": "$2a$10$u33ssaUQemVgkM6MmCoLH.Z2BnuTGKQprrO0DY.fng3/uOhKHmTa."
+    }
+  ],
+  "offers": [
+    {
+      "id": 1,
+      "title": "Inaugural Printing Discount",
+      "description": "Get high-quality digital prints at wholesale price for all order sizes.",
+      "image_path": "/uploads/mock-offer1.jpg",
+      "discount": "20% OFF",
+      "start_date": "2026-06-01",
+      "end_date": "2026-07-31",
+      "is_active": 1
+    },
+    {
+      "id": 2,
+      "title": "Corporate Bulk Business Cards",
+      "description": "Premium matte-finish business cards with spot UV varnishing for your entire team.",
+      "image_path": "/uploads/mock-offer2.jpg",
+      "discount": "Buy 500 Get 100 Free",
+      "start_date": "2026-06-15",
+      "end_date": "2026-08-15",
+      "is_active": 1
+    }
+  ],
+  "gallery": [
+    {
+      "id": 1,
+      "title": "Digital Production Press",
+      "image_path": "/uploads/mock-gallery1.jpg",
+      "created_at": "2026-06-27T08:54:32.586Z"
+    },
+    {
+      "id": 2,
+      "title": "Premium Catalog Printing",
+      "image_path": "/uploads/mock-gallery2.jpg",
+      "created_at": "2026-06-27T08:54:32.586Z"
+    },
+    {
+      "id": 3,
+      "title": "test",
+      "image_path": "/uploads/upload-1782556353256-194891557.jpeg",
+      "created_at": "2026-06-27T10:32:33.272Z"
+    }
+  ],
+  "brands": [
+    {
+      "id": 1,
+      "name": "HP",
+      "logo_path": "/dealers/dealer_1.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Epson",
+      "logo_path": "/dealers/dealer_2.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Canon",
+      "logo_path": "/dealers/dealer_3.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Brother",
+      "logo_path": "/dealers/dealer_4.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Dell",
+      "logo_path": "/dealers/dealer_5.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Logi",
+      "logo_path": "/dealers/dealer_6.jpg"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Print Heads",
+      "parent_id": null,
+      "seo_url": "print-heads"
+    },
+    {
+      "id": 2,
+      "name": "Toner Cartridges",
+      "parent_id": null,
+      "seo_url": "toner-cartridges"
+    },
+    {
+      "id": 3,
+      "name": "Fuser Units",
+      "parent_id": null,
+      "seo_url": "fuser-units"
+    },
+    {
+      "id": 4,
+      "name": "Laptop Batteries",
+      "parent_id": null,
+      "seo_url": "laptop-batteries"
+    },
+    {
+      "id": 5,
+      "name": "Desktop SSD & Memory",
+      "parent_id": null,
+      "seo_url": "desktop-ssd-memory"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "HP GT52 Yellow Printhead",
+      "brand_id": 1,
+      "part_number": "M0H56AA",
+      "oem_part_number": "M0H56AA",
+      "alternate_part_number": "GT52-Y-PH",
+      "hsn_code": "8443995910",
+      "sku": "HP-PH-GT52Y",
+      "category_id": 1,
+      "short_description": "Genuine HP GT52 Yellow printhead replacement module.",
+      "long_description": "Bring high-resolution, long-lasting color accuracy back to your HP Ink Tank system with this certified replacement printhead. Easy plug-and-play installation minimizes maintenance times.",
+      "tech_specifications": "Color: Yellow | Output: Inkjet | OEM Certified",
+      "warranty": "6 Months Vendor Warranty",
+      "moq": 2,
+      "unit": "NOS",
+      "weight": 0.15,
+      "availability": "In Stock",
+      "stock_status": "Available",
+      "image_path": "/uploads/mock-prod-gt52.jpg",
+      "datasheet_path": "",
+      "is_featured": 1,
+      "is_popular": 1,
+      "is_new_arrival": 1,
+      "meta_title": "HP GT52 Yellow Printhead (M0H56AA) Spare Part | Vell Print",
+      "meta_description": "Buy genuine HP GT52 Yellow replacement printhead online at Vell Print. Authentic spare parts for HP Ink Tank 310, 410 systems with next-day shipping.",
+      "seo_url": "hp-gt52-yellow-printhead"
+    },
+    {
+      "id": 2,
+      "name": "Canon PG-745 Black Ink Cartridge",
+      "brand_id": 3,
+      "part_number": "PG745-BK",
+      "oem_part_number": "PG745",
+      "alternate_part_number": "8285B001AA",
+      "hsn_code": "84439959",
+      "sku": "CN-CRT-745BK",
+      "category_id": 2,
+      "short_description": "Standard yield genuine black pigment ink cartridge.",
+      "long_description": "Perfect for everyday text print runs. Delivers rich, fade-resistant documents with deep black shades. Compatible with select Canon PIXMA model series.",
+      "tech_specifications": "Ink Volume: 8ml | Pigment Black | Yield: ~180 pages",
+      "warranty": "No Warranty on Consumables",
+      "moq": 5,
+      "unit": "PCS",
+      "weight": 0.1,
+      "availability": "In Stock",
+      "stock_status": "Available",
+      "image_path": "/uploads/mock-prod-pg745.jpg",
+      "datasheet_path": "",
+      "is_featured": 0,
+      "is_popular": 1,
+      "is_new_arrival": 0,
+      "meta_title": "Canon PG-745 Black Ink Cartridge Spare Part | Vell Print",
+      "meta_description": "Genuine Canon PG-745 black ink cartridge for Canon PIXMA series. Guaranteed compatibility, high-quality printing spares from Vell Print Coimbatore.",
+      "seo_url": "canon-pg-745-black-cartridge"
+    },
+    {
+      "id": 3,
+      "name": "HP LaserJet M1005 Fuser Assembly",
+      "brand_id": 1,
+      "part_number": "RM1-3044",
+      "oem_part_number": "RM1-3044-000CN",
+      "alternate_part_number": "RM13044",
+      "hsn_code": "84439951",
+      "sku": "HP-FUS-M1005",
+      "category_id": 3,
+      "short_description": "Complete fuser heating assembly replacement for 110V/220V LaserJet printers.",
+      "long_description": "Resolves paper jamming and toner smudging errors. Complete assembly including heating element, fuser film sleeves, pressure roller, and gear controls.",
+      "tech_specifications": "Voltage: 220V | Comp: HP LaserJet 1020, 1018, 1022, M1005 MFP",
+      "warranty": "3 Months Repair Warranty",
+      "moq": 1,
+      "unit": "PCS",
+      "weight": 1.8,
+      "availability": "In Stock",
+      "stock_status": "Available",
+      "image_path": "/uploads/mock-prod-fuser.jpg",
+      "datasheet_path": "",
+      "is_featured": 1,
+      "is_popular": 0,
+      "is_new_arrival": 1,
+      "meta_title": "HP M1005 LaserJet Fuser Assembly (RM1-3044) | Vell Print",
+      "meta_description": "Fix toner smudging and printer jams with this authentic HP LaserJet M1005 Fuser heating assembly (RM1-3044) from Vell Print Technology.",
+      "seo_url": "hp-laserjet-m1005-fuser-assembly"
+    }
+  ],
+  "product_compatibilities": [
+    {
+      "id": 1,
+      "product_id": 1,
+      "printer_brand": "HP",
+      "printer_model": "Ink Tank 310"
+    },
+    {
+      "id": 2,
+      "product_id": 1,
+      "printer_brand": "HP",
+      "printer_model": "Ink Tank 410"
+    },
+    {
+      "id": 3,
+      "product_id": 1,
+      "printer_brand": "HP",
+      "printer_model": "Smart Tank 515"
+    },
+    {
+      "id": 4,
+      "product_id": 2,
+      "printer_brand": "Canon",
+      "printer_model": "PIXMA MG2570S"
+    },
+    {
+      "id": 5,
+      "product_id": 2,
+      "printer_brand": "Canon",
+      "printer_model": "PIXMA iP2870S"
+    },
+    {
+      "id": 6,
+      "product_id": 3,
+      "printer_brand": "HP",
+      "printer_model": "LaserJet M1005 MFP"
+    },
+    {
+      "id": 7,
+      "product_id": 3,
+      "printer_brand": "HP",
+      "printer_model": "LaserJet 1020"
+    }
+  ],
+  "dealer_registrations": [],
+  "cart_enquiries": [
+    {
+      "id": 1,
+      "business_name": "test",
+      "dealer_name": "test",
+      "gst": "Not Provided",
+      "phone": "9566261950",
+      "delivery_location": "Chennai",
+      "items_summary": "HP GT52 Yellow Printhead (2 NOS), Canon PG-745 Black Ink Cartridge (5 PCS)",
+      "remarks": "None",
+      "created_at": "2026-06-27T10:48:58.022Z"
+    }
+  ],
+  "callbacks": [
+    {
+      "id": 1,
+      "name": "Test User",
+      "phone": "9876543210",
+      "created_at": "2026-06-28T15:20:42.351Z"
+    }
+  ],
+  "service_tickets": [
+    {
+      "id": 1,
+      "customer_name": "Test Corp",
+      "company": "",
+      "phone": "9876543210",
+      "email": "",
+      "equipment_type": "Printer",
+      "brand": "",
+      "model_number": "",
+      "issue_category": "Paper Jam",
+      "priority": "Normal",
+      "preferred_date": "",
+      "description": "Printer keeps jamming at tray 2 when printing double-sided documents",
+      "status": "Open",
+      "created_at": "2026-06-28T15:20:42.384Z"
+    }
+  ],
+  "blog_posts": [
+    {
+      "id": 1,
+      "title": "How to Maintain Your Laser Printer for Maximum Lifespan",
+      "slug": "how-to-maintain-laser-printer",
+      "category": "Tech Tips",
+      "excerpt": "Learn the essential maintenance routines that can extend your laser printer's life by 3-5 years and reduce costly repairs.",
+      "content": "Regular maintenance is key to keeping your laser printer running smoothly. Here are the top practices every business should follow:\n\n**1. Clean the Paper Path Monthly**\nDust and toner residue accumulate in the paper path, causing jams and print quality issues. Use a lint-free cloth and compressed air to clean rollers and guides.\n\n**2. Replace the Fuser Assembly on Schedule**\nThe fuser unit has a rated lifespan (typically 50,000-100,000 pages). Don't wait for it to fail — proactive replacement prevents paper jams and toner smudging.\n\n**3. Use Genuine Toner Cartridges**\nWhile compatible cartridges may seem cost-effective, they can damage the drum unit and void your warranty. Always use OEM-certified consumables.\n\n**4. Keep Firmware Updated**\nManufacturers release firmware updates that fix bugs and improve print quality. Check your printer's admin panel quarterly.\n\n**5. Store Paper Properly**\nHumid or wrinkled paper causes jams. Store paper in a cool, dry place and fan sheets before loading.\n\nFor professional printer maintenance and AMC services, contact Vell Print Technology at 9894833377.",
+      "image_path": "/uploads/mock-offer1.jpg",
+      "author": "Vell Print Technology",
+      "created_at": "2026-06-25T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "title": "Top 5 Business Laptops for 2026: Our Expert Picks",
+      "slug": "top-5-business-laptops-2026",
+      "category": "Product Guide",
+      "excerpt": "Choosing the right business laptop can boost productivity and reduce IT costs. Here are our top 5 recommendations for 2026.",
+      "content": "Selecting the right laptop for your team is one of the most impactful IT decisions a business can make. Here are our top picks for 2026:\n\n**1. HP EliteBook 860 G11**\nBest for enterprise environments. Features Intel Core Ultra processors, 16GB RAM, and enterprise-grade security with HP Wolf Security.\n\n**2. Dell Latitude 7450**\nIdeal for remote workers. Ultra-light at 1.3kg with all-day battery life and Thunderbolt 4 connectivity.\n\n**3. Lenovo ThinkPad X1 Carbon Gen 12**\nThe classic business workhorse. Legendary keyboard, robust build quality, and IT-friendly manageability.\n\n**4. HP ProBook 450 G11**\nBest value for SMEs. Solid performance with AMD Ryzen processors at a competitive price point.\n\n**5. Dell Vostro 3530**\nBudget-friendly choice for startups. Good specifications for everyday business tasks without breaking the bank.\n\nAll these laptops are available through Vell Print Technology with competitive corporate pricing, extended warranty options, and professional setup services.",
+      "image_path": "/uploads/mock-offer2.jpg",
+      "author": "Vell Print Technology",
+      "created_at": "2026-06-22T14:30:00.000Z"
+    },
+    {
+      "id": 3,
+      "title": "Understanding AMC Contracts: What Every Business Should Know",
+      "slug": "understanding-amc-contracts",
+      "category": "Business Guide",
+      "excerpt": "Annual Maintenance Contracts can save your business thousands in IT repair costs. Here's what to look for in an AMC agreement.",
+      "content": "An Annual Maintenance Contract (AMC) is a service agreement between your business and an IT service provider that covers regular maintenance, repairs, and support for your hardware infrastructure.\n\n**Types of AMC:**\n- **Comprehensive AMC**: Covers all parts, labour, and consumables. Best for businesses with aging equipment.\n- **Non-Comprehensive AMC**: Covers labour and diagnostics only. Parts are charged separately. Suitable for newer equipment.\n\n**What a Good AMC Should Include:**\n1. Defined response time (4-8 hours for critical issues)\n2. Preventive maintenance schedule (quarterly recommended)\n3. Coverage for all peripherals (printers, scanners, UPS)\n4. On-site support with certified technicians\n5. Transparent parts pricing with no hidden charges\n\n**Red Flags to Watch For:**\n- No defined SLA response times\n- Exclusion of common wear-and-tear parts\n- Mandatory annual price escalation clauses\n\n**Vell Print Technology AMC Benefits:**\n- 4-hour response time in Coimbatore city\n- Certified engineers for HP, Canon, Epson, Brother\n- Quarterly preventive maintenance visits\n- Discounted spare parts for AMC customers\n- Flexible monthly/quarterly/annual payment options\n\nContact us at 9894833377 to discuss a customized AMC plan for your organization.",
+      "image_path": "/uploads/mock-gallery1.jpg",
+      "author": "Vell Print Technology",
+      "created_at": "2026-06-18T09:15:00.000Z"
+    }
+  ]
+}

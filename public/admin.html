@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" class="light-theme">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+  <title>Admin Panel - Vell Print Technology</title>
+  
+  <link rel="stylesheet" href="/css/style.css?v=17">
+  
+  <!-- Async loading of Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+
+  
+  <script src="/config.js"></script>
+</head>
+<body>
+
+  <!-- Top Navigation (Admin View) -->
+  <header class="scrolled">
+    <div class="container nav-wrapper">
+      <a href="/" class="logo">
+        <img src="/logo.png" alt="Vell Print Technology Logo" class="logo-img">
+      </a>
+      
+      <div style="display:flex; align-items:center; gap:1.25rem;">
+        
+        <div id="logout-wrapper" style="display:none;">
+          <button id="logoutBtn" class="cta-btn" style="background:hsl(0, 75%, 45%); box-shadow:none;"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="admin-container" style="max-width:1200px;">
+
+    <!-- 1. Secure Login Section -->
+    <section id="login-section" class="admin-login-card animate-fade">
+      <form id="loginForm" novalidate>
+        <h2 style="text-align:center; margin-bottom: 1.5rem;" class="gradient-text"><i class="fa-solid fa-shield-halved"></i> Secure Access</h2>
+        
+        <div id="login-error-alert" class="error-message" style="text-align:center; padding:0.5rem; background:rgba(255,0,0,0.1); border-radius:4px; display:none; margin-bottom:1rem;"></div>
+
+        <div class="form-group">
+          <label for="username">Admin Username</label>
+          <input type="text" id="username" name="username" required autocomplete="username">
+          <div class="error-message" id="username-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Security Password</label>
+          <input type="password" id="password" name="password" required autocomplete="current-password">
+          <div class="error-message" id="password-error"></div>
+        </div>
+
+        <button type="submit" class="cta-btn" id="loginSubmitBtn" style="margin-top: 1rem;"><i class="fa-solid fa-lock-open"></i> Authenticate Dashboard</button>
+      </form>
+    </section>
+
+    <!-- 2. Admin Dashboard Section (Hidden by Default) -->
+    <section id="dashboard-section" class="admin-panel animate-fade">
+      <div class="admin-header" style="flex-direction:column; align-items:start; gap:1.5rem;">
+        <div style="display:flex; justify-content:space-between; width:100%; align-items:center; flex-wrap:wrap;">
+          <div>
+            <h2>Operational Dashboard</h2>
+            <p>Welcome back, <span id="admin-user-display" class="gradient-text" style="font-weight:700;">Admin</span></p>
+          </div>
+          
+          <!-- Statistics Cards Grid -->
+          <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin-top:0.5rem;" id="stats-grid">
+            <div style="background:var(--theme-card); border:1px solid var(--theme-border); padding:0.75rem 1.5rem; border-radius:var(--border-radius-md); text-align:center;">
+              <span style="font-size:0.75rem; color:var(--theme-text-muted); text-transform:uppercase;">Products</span>
+              <h4 id="stat-products" style="font-size:1.25rem; margin-top:0.1rem;">0</h4>
+            </div>
+            <div style="background:var(--theme-card); border:1px solid var(--theme-border); padding:0.75rem 1.5rem; border-radius:var(--border-radius-md); text-align:center;">
+              <span style="font-size:0.75rem; color:var(--theme-text-muted); text-transform:uppercase;">Registrations</span>
+              <h4 id="stat-dealers" style="font-size:1.25rem; margin-top:0.1rem; color:var(--color-primary);">0</h4>
+            </div>
+            <div style="background:var(--theme-card); border:1px solid var(--theme-border); padding:0.75rem 1.5rem; border-radius:var(--border-radius-md); text-align:center;">
+              <span style="font-size:0.75rem; color:var(--theme-text-muted); text-transform:uppercase;">Enquiries</span>
+              <h4 id="stat-enquiries" style="font-size:1.25rem; margin-top:0.1rem;">0</h4>
+            </div>
+            <div style="background:var(--theme-card); border:1px solid var(--theme-border); padding:0.75rem 1.5rem; border-radius:var(--border-radius-md); text-align:center;">
+              <span style="font-size:0.75rem; color:var(--theme-text-muted); text-transform:uppercase;">Callbacks</span>
+              <h4 id="stat-callbacks" style="font-size:1.25rem; margin-top:0.1rem;">0</h4>
+            </div>
+            <div style="background:var(--theme-card); border:1px solid var(--theme-border); padding:0.75rem 1.5rem; border-radius:var(--border-radius-md); text-align:center;">
+              <span style="font-size:0.75rem; color:var(--theme-text-muted); text-transform:uppercase;">Tickets</span>
+              <h4 id="stat-tickets" style="font-size:1.25rem; margin-top:0.1rem; color:hsl(0,75%,50%);">0</h4>
+            </div>
+            <div style="background:var(--theme-card); border:1px solid var(--theme-border); padding:0.75rem 1.5rem; border-radius:var(--border-radius-md); text-align:center;">
+              <span style="font-size:0.75rem; color:var(--theme-text-muted); text-transform:uppercase;">Blog Posts</span>
+              <h4 id="stat-blog" style="font-size:1.25rem; margin-top:0.1rem;">0</h4>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tab Selectors -->
+          <button class="admin-nav-btn active" data-tab="tab-offers"><i class="fa-solid fa-tags"></i> Offers</button>
+          <button class="admin-nav-btn" data-tab="tab-gallery"><i class="fa-regular fa-image"></i> Gallery</button>
+          <button class="admin-nav-btn" data-tab="tab-products"><i class="fa-solid fa-boxes-packing"></i> Catalog</button>
+          <button class="admin-nav-btn" data-tab="tab-dealers"><i class="fa-solid fa-user-check"></i> Dealers</button>
+          <button class="admin-nav-btn" data-tab="tab-enquiries"><i class="fa-solid fa-receipt"></i> Enquiries</button>
+          <button class="admin-nav-btn" data-tab="tab-callbacks"><i class="fa-solid fa-phone"></i> Callbacks</button>
+          <button class="admin-nav-btn" data-tab="tab-tickets"><i class="fa-solid fa-ticket"></i> Tickets</button>
+          <button class="admin-nav-btn" data-tab="tab-blog"><i class="fa-solid fa-newspaper"></i> Blog</button>
+        </div>
+      </div>
+
+      <!-- Tab A: Manage Offers -->
+      <div id="tab-offers" class="admin-panel active">
+        <div style="display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: start;">
+          <div>
+            <form id="offerForm" enctype="multipart/form-data" novalidate>
+              <h3 class="gradient-text"><i class="fa-solid fa-plus"></i> Add Promo Offer</h3>
+              
+              <div class="form-group">
+                <label for="offerTitle">Offer Title</label>
+                <input type="text" id="offerTitle" name="title" required>
+                <div class="error-message" id="offerTitle-error"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="offerDiscount">Discount / Deal Badge</label>
+                <input type="text" id="offerDiscount" name="discount" required>
+                <div class="error-message" id="offerDiscount-error"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="offerDesc">Offer Description</label>
+                <textarea id="offerDesc" name="description"></textarea>
+              </div>
+
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                  <label for="startDate">Starts On</label>
+                  <input type="date" id="startDate" name="start_date">
+                </div>
+                <div class="form-group">
+                  <label for="endDate">Expires On</label>
+                  <input type="date" id="endDate" name="end_date">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Offer Banner Image</label>
+                <div class="upload-drag-area" id="offer-upload-area">
+                  <i class="fa-regular fa-folder-open" style="font-size:2rem; margin-bottom:0.5rem; color:var(--color-primary);"></i>
+                  <p>Drag image here or click to upload</p>
+                  <input type="file" id="offerImage" name="image" accept="image/*" class="visually-hidden" required>
+                  <img id="offer-img-preview" class="upload-preview" alt="Preview">
+                </div>
+                <div class="error-message" id="offerImage-error"></div>
+              </div>
+
+              <button type="submit" class="cta-btn" id="offerSubmitBtn"><i class="fa-solid fa-floppy-disk"></i> Publish Offer</button>
+            </form>
+          </div>
+
+          <div>
+            <h3 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-list"></i> Active Offers</h3>
+            <div id="admin-offers-list" class="admin-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab B: Manage Gallery -->
+      <div id="tab-gallery" class="admin-panel">
+        <div style="display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: start;">
+          <div>
+            <form id="galleryForm" enctype="multipart/form-data" novalidate>
+              <h3 class="gradient-text"><i class="fa-solid fa-upload"></i> Upload Production Work</h3>
+              
+              <div class="form-group">
+                <label for="galleryTitle">Item Title / Machine Name</label>
+                <input type="text" id="galleryTitle" name="title" required>
+                <div class="error-message" id="galleryTitle-error"></div>
+              </div>
+
+              <div class="form-group">
+                <label>Upload High-Res Photo</label>
+                <div class="upload-drag-area" id="gallery-upload-area">
+                  <i class="fa-regular fa-images" style="font-size:2rem; margin-bottom:0.5rem; color:var(--color-primary);"></i>
+                  <p>Drag photo here or click to upload</p>
+                  <input type="file" id="galleryImage" name="image" accept="image/*" class="visually-hidden" required>
+                  <img id="gallery-img-preview" class="upload-preview" alt="Preview">
+                </div>
+                <div class="error-message" id="galleryImage-error"></div>
+              </div>
+
+              <button type="submit" class="cta-btn" id="gallerySubmitBtn"><i class="fa-solid fa-circle-arrow-up"></i> Upload Photo</button>
+            </form>
+          </div>
+
+          <div>
+            <h3 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-images"></i> Current Gallery</h3>
+            <div id="admin-gallery-list" class="admin-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab C: Manage Products & CSV Import -->
+      <div id="tab-products" class="admin-panel">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;">
+          
+          <!-- Add Single Product / CSV Upload -->
+          <div>
+            <!-- CSV Bulk Upload Card -->
+            <div style="background:var(--theme-card); border:1px solid var(--theme-border); border-radius:var(--border-radius-md); padding:2rem; margin-bottom:2.5rem; box-shadow:0 4px 15px var(--theme-shadow);">
+              <h3 class="gradient-text" style="margin-bottom:1rem;"><i class="fa-solid fa-file-csv"></i> Bulk Import Spares (CSV)</h3>
+              <p style="font-size:0.8rem; color:var(--theme-text-muted); margin-bottom:1rem;">Upload a CSV manifest sheet matching column headers: <code>name, brand_id, part_number, sku, category_id, short_description, seo_url, moq, unit, image_path, compatibilities</code> (Compatibilities format: <code>Brand:Model;Brand:Model</code>)</p>
+              
+              <form id="bulkProductForm" enctype="multipart/form-data">
+                <div class="form-group">
+                  <input type="file" id="csvFile" name="csvFile" accept=".csv" required style="min-height:auto; padding:0.5rem 0;">
+                </div>
+                <button type="submit" class="cta-btn" id="bulkSubmitBtn" style="padding:0.6rem 1.2rem; font-size:0.85rem;"><i class="fa-solid fa-file-import"></i> Upload & Import Catalog</button>
+              </form>
+            </div>
+
+            <!-- Single Product Form -->
+            <form id="productForm" enctype="multipart/form-data" novalidate>
+              <h3 class="gradient-text"><i class="fa-solid fa-boxes-packing"></i> Add Single Spare Part</h3>
+              
+              <div class="form-group">
+                <label for="prodName">Product Name *</label>
+                <input type="text" id="prodName" name="name" required>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                  <label for="prodBrand">Brand *</label>
+                  <select id="prodBrand" name="brand_id" required>
+                    <option value="">Select brand...</option>
+                    <!-- Populated via loadFilters -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="prodCategory">Category *</label>
+                  <select id="prodCategory" name="category_id" required>
+                    <option value="">Select category...</option>
+                    <!-- Populated via loadFilters -->
+                  </select>
+                </div>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                  <label for="prodPartNo">Part Number</label>
+                  <input type="text" id="prodPartNo" name="part_number">
+                </div>
+                <div class="form-group">
+                  <label for="prodSku">SKU</label>
+                  <input type="text" id="prodSku" name="sku">
+                </div>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                  <label for="prodMoq">MOQ *</label>
+                  <input type="number" id="prodMoq" name="moq" value="1" min="1" required>
+                </div>
+                <div class="form-group">
+                  <label for="prodUnit">Unit *</label>
+                  <input type="text" id="prodUnit" name="unit" value="PCS" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="prodShortDesc">Short Summary *</label>
+                <input type="text" id="prodShortDesc" name="short_description" required>
+              </div>
+
+              <div class="form-group">
+                <label for="prodSeoUrl">SEO SEO URL (e.g. printhead-gt52-yellow) *</label>
+                <input type="text" id="prodSeoUrl" name="seo_url" required>
+              </div>
+
+              <div class="form-group">
+                <label for="prodCompatibilities">Printer Compatibilities (Comma separated e.g. HP:Ink Tank 410,Canon:PIXMA)</label>
+                <input type="text" id="prodCompatibilities" name="compatibilities" placeholder="Brand:Model, Brand:Model">
+              </div>
+
+              <div class="form-group">
+                <label>Spare Photo</label>
+                <div class="upload-drag-area" id="product-upload-area">
+                  <i class="fa-regular fa-image" style="font-size:2rem; margin-bottom:0.5rem; color:var(--color-primary);"></i>
+                  <p>Click or drag image to upload</p>
+                  <input type="file" id="productImage" name="image" accept="image/*" class="visually-hidden">
+                  <img id="product-img-preview" class="upload-preview" alt="Preview">
+                </div>
+              </div>
+
+              <button type="submit" class="cta-btn" id="prodSubmitBtn"><i class="fa-solid fa-box-archive"></i> Add Spare Product</button>
+            </form>
+          </div>
+
+          <!-- Existing Catalog Spares List -->
+          <div>
+            <h3 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-warehouse"></i> Catalog Inventory</h3>
+            <div id="admin-products-list" class="admin-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tab D: Manage Dealer Registrations -->
+      <div id="tab-dealers" class="admin-panel">
+        <h3 style="margin-bottom:1.5rem;"><i class="fa-solid fa-user-check"></i> Registration Applications</h3>
+        <div id="admin-dealers-list" style="display:flex; flex-direction:column; gap:1.5rem;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Tab E: Manage Cart Enquiries -->
+      <div id="tab-enquiries" class="admin-panel">
+        <h3 style="margin-bottom:1.5rem;"><i class="fa-solid fa-receipt"></i> B2B Cart Enquiries Logs</h3>
+        <div id="admin-enquiries-list" style="display:flex; flex-direction:column; gap:1.5rem;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+      <!-- Tab F: Callback Requests -->
+      <div id="tab-callbacks" class="admin-panel">
+        <h3 style="margin-bottom:1.5rem;"><i class="fa-solid fa-phone"></i> Callback Requests</h3>
+        <div id="admin-callbacks-list" style="display:flex; flex-direction:column; gap:1rem;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Tab G: Service Tickets -->
+      <div id="tab-tickets" class="admin-panel">
+        <h3 style="margin-bottom:1.5rem;"><i class="fa-solid fa-ticket"></i> Service Tickets</h3>
+        <div id="admin-tickets-list" style="display:flex; flex-direction:column; gap:1.5rem;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Tab H: Blog Posts -->
+      <div id="tab-blog" class="admin-panel">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:2.5rem; align-items:start;">
+          <!-- Left: Create Blog Post Form -->
+          <div>
+            <h3 style="margin-bottom:1.5rem;"><i class="fa-solid fa-pen-to-square"></i> Create Blog Post</h3>
+            <form id="blogForm" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="blogTitle">Post Title</label>
+                <input type="text" id="blogTitle" name="title" required placeholder="e.g. How to Maintain Your Printer">
+              </div>
+              <div class="form-group">
+                <label for="blogSlug">URL Slug</label>
+                <input type="text" id="blogSlug" name="slug" required placeholder="e.g. how-to-maintain-printer">
+              </div>
+              <div class="form-group">
+                <label for="blogCategory">Category</label>
+                <select id="blogCategory" name="category" required>
+                  <option value="Tech Tips">Tech Tips</option>
+                  <option value="Product Guide">Product Guide</option>
+                  <option value="Business Guide">Business Guide</option>
+                  <option value="Company News">Company News</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="blogExcerpt">Excerpt / Summary</label>
+                <input type="text" id="blogExcerpt" name="excerpt" placeholder="Short summary for listing cards">
+              </div>
+              <div class="form-group">
+                <label for="blogContent">Full Content</label>
+                <textarea id="blogContent" name="content" required placeholder="Write blog post content here... (supports **bold** and paragraph breaks)" style="min-height:200px;"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Thumbnail Image</label>
+                <input type="file" name="thumbnail" accept="image/*" style="padding:0.5rem;">
+              </div>
+              <button type="submit" class="cta-btn" style="width:100%;"><i class="fa-solid fa-paper-plane"></i> Publish Blog Post</button>
+            </form>
+          </div>
+
+          <!-- Right: Existing Blog Posts -->
+          <div>
+            <h3 style="margin-bottom:1.5rem;"><i class="fa-solid fa-list"></i> Published Posts</h3>
+            <div id="admin-blog-list" style="display:flex; flex-direction:column; gap:1rem;">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <script src="/js/admin.js?v=17"></script>
+</body>
+</html>

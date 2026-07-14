@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" class="light-theme">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+  <title>Enquiry Cart - B2B Spare Parts Marketplace | Vell Print Technology</title>
+  
+  <meta name="description" content="View items in your Vell Print B2B enquiry cart and generate checkout requests.">
+  <meta name="theme-color" content="#FF5722">
+  
+  <link rel="stylesheet" href="/css/style.css?v=17">
+  
+  <!-- Async loading of styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+
+  
+  <script src="/config.js"></script>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="scrolled">
+    <div class="container nav-wrapper">
+      <a href="/" class="logo">
+        <img src="/logo.png" alt="Vell Print Technology Logo" class="logo-img">
+      </a>
+      
+      <nav id="navbar">
+        <ul>
+          <li><a href="/#home">Home</a></li>
+          <li><a href="/#services">Services</a></li>
+          <li><a href="/#motto">Our Motto</a></li>
+          <li><a href="/#partners">Partners</a></li>
+          <li><a href="/store" style="color: var(--color-primary); font-weight:700;"><i class="fa-solid fa-store"></i> Dealer Store</a></li>
+          <li><a href="/cart" style="position:relative;"><i class="fa-solid fa-cart-shopping"></i> Cart <span id="cart-badge" style="display:none; background:var(--color-primary); color:white; font-size:0.7rem; padding: 2px 6px; border-radius:50%; position:absolute; top:-8px; right:-12px;">0</span></a></li>
+          <li><a href="/register"><i class="fa-solid fa-user-plus"></i> Register</a></li>
+          
+        </ul>
+      </nav>
+      
+      <div style="display:flex; align-items:center; gap:1.25rem;">
+        
+        <div class="menu-toggle" id="mobile-menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cart Container -->
+  <div class="admin-container" style="max-width:1100px; margin-top:9.5rem;">
+    
+    <div class="reveal" style="margin-bottom:2rem;">
+      <h1 class="gradient-text"><i class="fa-solid fa-cart-shopping"></i> Spares Enquiry Cart</h1>
+      <p style="color:var(--theme-text-muted);">Adjust spares quantity (respecting MOQs) and fill out your business profile below.</p>
+    </div>
+
+    <!-- Layout Grid -->
+    <div id="cart-layout" style="display:grid; grid-template-columns: 1.5fr 1fr; gap:3rem; align-items:start;">
+      
+      <!-- Left: Cart Items list -->
+      <div class="reveal-left" style="background:var(--theme-card); border:1px solid var(--theme-border); border-radius:var(--border-radius-lg); padding:2rem; box-shadow:0 8px 30px var(--theme-shadow);">
+        <h3 style="margin-bottom:1.5rem; border-bottom:1px solid var(--theme-border); padding-bottom:0.75rem;"><i class="fa-solid fa-basket-shopping"></i> Items List</h3>
+        
+        <div id="cart-items-wrapper" style="display:flex; flex-direction:column; gap:1.5rem;">
+          <!-- Dynamically loaded list of spares -->
+        </div>
+      </div>
+
+      <!-- Right: B2B Business Profile Form -->
+      <div class="contact-form-wrapper reveal-right" style="padding:2.5rem; border-radius:var(--border-radius-lg); border:1px solid var(--theme-border); box-shadow:0 8px 30px var(--theme-shadow);">
+        <h3 style="margin-bottom:1.5rem; border-bottom:1px solid var(--theme-border); padding-bottom:0.75rem;"><i class="fa-solid fa-file-signature"></i> B2B Enquiry Profile</h3>
+        
+        <form id="checkoutForm">
+          
+          <div class="form-group">
+            <label for="businessName">Business Name *</label>
+            <input type="text" id="businessName" required>
+            <div class="error-message" id="businessName-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="dealerName">Dealer Name / Rep *</label>
+            <input type="text" id="dealerName" required>
+            <div class="error-message" id="dealerName-error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="gstNumber">GST Number</label>
+            <input type="text" id="gstNumber">
+            <div class="error-message" id="gstNumber-error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="phoneNumber">Mobile Number *</label>
+            <input type="tel" id="phoneNumber" required pattern="[0-9]{10}">
+            <div class="error-message" id="phoneNumber-error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="deliveryLocation">Delivery City / State *</label>
+            <input type="text" id="deliveryLocation" required>
+            <div class="error-message" id="deliveryLocation-error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="remarks">Order Remarks</label>
+            <textarea id="remarks" rows="3"></textarea>
+            <div class="error-message" id="remarks-error"></div>
+          </div>
+
+          <button type="submit" class="cta-btn" style="width:100%; min-height:50px; margin-top:1rem;"><i class="fa-brands fa-whatsapp"></i> Send Enquiry via WhatsApp</button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Empty Cart Fallback -->
+    <div id="empty-cart-message" style="display:none; text-align:center; padding:6rem 2rem;" class="reveal">
+      <i class="fa-solid fa-basket-shopping" style="font-size:5rem; color:var(--theme-text-muted); margin-bottom:1.5rem;"></i>
+      <h2 style="margin-bottom:1rem;">Your Enquiry Cart is Empty</h2>
+      <p style="color:var(--theme-text-muted); margin-bottom:2rem; max-width:400px; margin-left:auto; margin-right:auto;">Browse our printer & laptop spares catalog to select replacement components for your client orders.</p>
+      <a href="/store" class="cta-btn"><i class="fa-solid fa-store"></i> Browse Catalog</a>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <img src="/logo.png" alt="Vell Print Technology Logo" class="logo-img">
+        </a>
+        <p>Premium center for all custom computer assemblies, laptop upgrades, and printer sales & servicing in Saibabacolony, Coimbatore. Care for our customers.</p>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Services</h3>
+        <ul>
+          <li><a href="/#services">Printer Servicing</a></li>
+          <li><a href="/#services">System Sales</a></li>
+          <li><a href="/store">Dealer Store</a></li>
+          <li><a href="/#services">Custom PC Builds</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Core Links</h3>
+        <ul>
+          <li><a href="/#home">Home Profile</a></li>
+          <li><a href="/#services">Core Capabilities</a></li>
+          <li><a href="/store" style="color:var(--color-primary); font-weight:700;"><i class="fa-solid fa-store"></i> Dealer Store</a></li>
+          <li><a href="/#offers">Active Deals</a></li>
+          <li><a href="/#gallery">Production Portfolio</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h3>Operational Hub</h3>
+        <ul>
+          <li>Mon - Sat: 9:00 AM - 8:00 PM</li>
+          <li>N.S.R. Road, Coimbatore</li>
+          <li>GST Regd. Provider</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Vell Print Technology. All Rights Reserved. | Made by <a href="http://www.rexonsofttech.in" target="_blank" style="color:var(--color-primary); font-weight:700;">RexonSoftTech</a> (Contact: 7871654777)</p>
+      <div style="display:flex; gap:1.5rem; font-size: 1.2rem;">
+        <a href="tel:+919894833377"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="mailto:vellprint@gmail.com"><i class="fa-regular fa-envelope"></i></a>
+        <a href="/#home"><i class="fa-solid fa-arrow-up"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js?v=17"></script>
+  <!-- Cart logic for listing and WhatsApp enquiry formatting -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const itemsWrapper = document.getElementById('cart-items-wrapper');
+      const cartLayout = document.getElementById('cart-layout');
+      const emptyCartMessage = document.getElementById('empty-cart-message');
+      const checkoutForm = document.getElementById('checkoutForm');
+      const cartBadge = document.getElementById('cart-badge');
+
+      let cart = [];
+
+      function loadCart() {
+        cart = JSON.parse(localStorage.getItem('vell_cart') || '[]');
+        updateBadge();
+        if (cart.length === 0) {
+          cartLayout.style.display = 'none';
+          emptyCartMessage.style.display = 'block';
+        } else {
+          cartLayout.style.display = 'grid';
+          emptyCartMessage.style.display = 'none';
+          renderCart();
+        }
+      }
+
+      function updateBadge() {
+        const count = cart.reduce((sum, item) => sum + item.qty, 0);
+        if (count > 0) {
+          cartBadge.textContent = count;
+          cartBadge.style.display = 'inline-block';
+        } else {
+          cartBadge.style.display = 'none';
+        }
+      }
+
+      function renderCart() {
+        itemsWrapper.innerHTML = '';
+        cart.forEach(item => {
+          const row = document.createElement('div');
+          row.style.display = 'flex';
+          row.style.alignItems = 'center';
+          row.style.gap = '1.5rem';
+          row.style.borderBottom = '1px solid var(--theme-border)';
+          row.style.paddingBottom = '1.5rem';
+          row.style.flexWrap = 'wrap';
+
+          row.innerHTML = `
+            <img src="${item.image_path}" alt="${item.name}" style="width:70px; height:70px; object-fit:contain; border-radius:6px; border:1px solid var(--theme-border); background:var(--theme-bg);">
+            <div style="flex-grow:1; min-width:180px;">
+              <h4 style="margin-bottom:0.25rem; font-size:1rem;">${item.name}</h4>
+              <span style="font-size:0.8rem; color:var(--theme-text-muted);"><strong>Part No:</strong> ${item.part_number || 'N/A'}</span>
+            </div>
+            
+            <!-- Qty adjustments -->
+            <div style="display:flex; align-items:center; border:1px solid var(--theme-border); border-radius:var(--border-radius-md); overflow:hidden;">
+              <button class="qty-btn" data-id="${item.id}" data-action="minus" style="padding:0.4rem 0.8rem; background:transparent; border:none; color:var(--theme-text); cursor:pointer;"><i class="fa-solid fa-minus" style="font-size:0.75rem;"></i></button>
+              <span style="min-width:30px; text-align:center; font-size:0.9rem; font-weight:700;">${item.qty}</span>
+              <button class="qty-btn" data-id="${item.id}" data-action="plus" style="padding:0.4rem 0.8rem; background:transparent; border:none; color:var(--theme-text); cursor:pointer;"><i class="fa-solid fa-plus" style="font-size:0.75rem;"></i></button>
+            </div>
+
+            <button class="delete-btn remove-item-btn" data-id="${item.id}" style="padding:0.4rem 0.8rem; font-size:0.8rem; background:hsl(0, 75%, 45%);"><i class="fa-solid fa-trash"></i></button>
+          `;
+          itemsWrapper.appendChild(row);
+        });
+
+        // Bind Quantity adjusters
+        document.querySelectorAll('.qty-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const pid = parseInt(btn.getAttribute('data-id'));
+            const action = btn.getAttribute('data-action');
+            const item = cart.find(i => i.id === pid);
+            if (item) {
+              if (action === 'plus') {
+                item.qty += 1;
+              } else if (action === 'minus') {
+                if (item.qty > item.moq) {
+                  item.qty -= 1;
+                }
+              }
+              localStorage.setItem('vell_cart', JSON.stringify(cart));
+              loadCart();
+            }
+          });
+        });
+
+        // Bind delete item buttons
+        document.querySelectorAll('.remove-item-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const pid = parseInt(btn.getAttribute('data-id'));
+            cart = cart.filter(i => i.id !== pid);
+            localStorage.setItem('vell_cart', JSON.stringify(cart));
+            loadCart();
+          });
+        });
+      }
+
+      // Handle checkout submission
+      checkoutForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const business_name = document.getElementById('businessName').value.trim();
+        const dealer_name = document.getElementById('dealerName').value.trim();
+        const gst = document.getElementById('gstNumber').value.trim() || 'Not Provided';
+        const phone = document.getElementById('phoneNumber').value.trim();
+        const delivery_location = document.getElementById('deliveryLocation').value.trim();
+        const remarks = document.getElementById('remarks').value.trim() || 'None';
+
+        if (cart.length === 0) return;
+
+        // Compile items list string
+        const itemsList = cart.map((item, idx) => {
+          return `${idx + 1}. ${item.name} (Part: ${item.part_number || 'N/A'}) - Qty: ${item.qty} ${item.unit}`;
+        }).join('\n');
+
+        const itemsSummaryText = cart.map((item) => {
+          return `${item.name} (${item.qty} ${item.unit})`;
+        }).join(', ');
+
+        try {
+          // Log B2B enquiry to database first for audit logs and admin panel dashboard
+          const apiRes = await fetch('/api/enquiries', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              business_name,
+              dealer_name,
+              gst,
+              phone,
+              delivery_location,
+              items_summary: itemsSummaryText,
+              remarks
+            })
+          });
+          const apiData = await apiRes.json();
+          
+          if (apiData.success) {
+            // Build the prefilled WhatsApp text message
+            const whatsAppText = `🔔 *VELL PRINT TECHNOLOGY - B2B SPARES ENQUIRY*\n------------------------------------------\n🏢 *Business:* ${business_name}\n👤 *Contact:* ${dealer_name}\n🔢 *GST:* ${gst}\n📞 *Phone:* ${phone}\n📍 *Delivery:* ${delivery_location}\n📝 *Remarks:* ${remarks}\n\n📦 *SPARE PARTS REQUESTED:*\n${itemsList}\n\n🚀 _Requesting availability, stock check, and bulk pricing quotation._`;
+            
+            // Clear checkout cart locally
+            localStorage.removeItem('vell_cart');
+            
+            // Redirect user to WhatsApp Web/App
+            const encodedText = encodeURIComponent(whatsAppText);
+            const waUrl = `https://wa.me/919894833377?text=${encodedText}`;
+            window.open(waUrl, '_blank');
+
+            // Reset UI
+            loadCart();
+          } else {
+            alert('Failed to log enquiry logs. Please check network logs.');
+          }
+        } catch (err) {
+          console.error('Checkout error:', err);
+          alert('Failed to connect to servers.');
+        }
+      });
+
+      loadCart();
+    });
+  </script>
+</body>
+</html>

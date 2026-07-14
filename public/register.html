@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" class="light-theme">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+  <title>Dealer Profile Registration | Vell Print Technology</title>
+  
+  <meta name="description" content="Register as an authorised dealer or partner with Vell Print Technology to access exclusive printer & laptop spare parts inventories.">
+  <meta name="theme-color" content="#FF5722">
+  
+  <link rel="stylesheet" href="/css/style.css?v=17">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+
+  
+  <script src="/config.js"></script>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="scrolled">
+    <div class="container nav-wrapper">
+      <a href="/" class="logo">
+        <img src="/logo.png" alt="Vell Print Technology Logo" class="logo-img">
+      </a>
+      
+      <nav id="navbar">
+        <ul>
+          <li><a href="/#home">Home</a></li>
+          <li><a href="/#services">Services</a></li>
+          <li><a href="/#motto">Our Motto</a></li>
+          <li><a href="/#partners">Partners</a></li>
+          <li><a href="/store" style="color: var(--color-primary); font-weight:700;"><i class="fa-solid fa-store"></i> Dealer Store</a></li>
+          <li><a href="/cart" style="position:relative;"><i class="fa-solid fa-cart-shopping"></i> Cart <span id="cart-badge" style="display:none; background:var(--color-primary); color:white; font-size:0.7rem; padding: 2px 6px; border-radius:50%; position:absolute; top:-8px; right:-12px;">0</span></a></li>
+          <li><a href="/register"><i class="fa-solid fa-user-plus"></i> Register</a></li>
+          
+        </ul>
+      </nav>
+      
+      <div style="display:flex; align-items:center; gap:1.25rem;">
+        
+        <div class="menu-toggle" id="mobile-menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Form Container -->
+  <div class="admin-container" style="max-width:700px; margin-top:9.5rem;">
+    
+    <div class="reveal" style="margin-bottom:2rem; text-align:center;">
+      <h1 class="gradient-text"><i class="fa-solid fa-user-tie"></i> B2B Partner Registration</h1>
+      <p style="color:var(--theme-text-muted);">Register your service center or dealership to access trade rates, spares lists, and AMCs.</p>
+    </div>
+
+    <!-- Registration Form Wrapper -->
+    <div class="contact-form-wrapper reveal-scale" style="padding:3.5rem; border-radius:var(--border-radius-lg); border:1px solid var(--theme-border); box-shadow:0 8px 30px var(--theme-shadow); background:var(--theme-card);">
+      
+      <!-- Submission Successful message -->
+      <div id="success-message" style="display:none; text-align:center; padding:2rem 0;">
+        <i class="fa-solid fa-circle-check" style="font-size:4rem; color:hsl(120, 70%, 45%); margin-bottom:1.5rem;"></i>
+        <h2 style="margin-bottom:1rem;">Application Logged!</h2>
+        <p style="color:var(--theme-text-muted); line-height:1.6; margin-bottom:2rem;">Your dealership request has been successfully forwarded to Vell Print Technology. Our admin team will verify your business details and contact you via phone/email shortly.</p>
+        <a href="/store" class="cta-btn"><i class="fa-solid fa-store"></i> Return to Store</a>
+      </div>
+
+      <form id="dealerRegisterForm">
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+          <div class="form-group">
+            <label for="regBusinessName">Business / Shop Name *</label>
+            <input type="text" id="regBusinessName" required>
+            <div class="error-message" id="regBusinessName-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="regDealerName">Owner / Rep Name *</label>
+            <input type="text" id="regDealerName" required>
+            <div class="error-message" id="regDealerName-error"></div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+          <div class="form-group">
+            <label for="regGST">GST Number</label>
+            <input type="text" id="regGST">
+            <div class="error-message" id="regGST-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="regPAN">PAN Number</label>
+            <input type="text" id="regPAN">
+            <div class="error-message" id="regPAN-error"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="regAddress">Business Address *</label>
+          <input type="text" id="regAddress" required>
+          <div class="error-message" id="regAddress-error"></div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+          <div class="form-group">
+            <label for="regPhone">Contact Mobile *</label>
+            <input type="tel" id="regPhone" required pattern="[0-9]{10}">
+            <div class="error-message" id="regPhone-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="regEmail">Gmail / Email *</label>
+            <input type="email" id="regEmail" required>
+            <div class="error-message" id="regEmail-error"></div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:1rem;">
+          <div class="form-group">
+            <label for="regCity">City *</label>
+            <input type="text" id="regCity" required>
+            <div class="error-message" id="regCity-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="regState">State *</label>
+            <input type="text" id="regState" required>
+            <div class="error-message" id="regState-error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="regPincode">Pincode *</label>
+            <input type="text" id="regPincode" required pattern="[0-9]{6}">
+            <div class="error-message" id="regPincode-error"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="regBusinessType">Business Type *</label>
+          <select id="regBusinessType" required>
+            <option value="" disabled selected>Select business type...</option>
+            <option value="service-center">Printer & Computer Service Center</option>
+            <option value="retailer">Retail Computer / Printer Shop</option>
+            <option value="reseller">Authorized Reseller / Distributor</option>
+            <option value="freelance">Freelance IT Service Technician</option>
+          </select>
+          <div class="error-message" id="regBusinessType-error"></div>
+        </div>
+
+        <button type="submit" class="cta-btn" style="width:100%; min-height:50px; margin-top:1.5rem;"><i class="fa-solid fa-file-shield"></i> Submit Partner Application</button>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <img src="/logo.png" alt="Vell Print Technology Logo" class="logo-img">
+        </a>
+        <p>Premium center for all custom computer assemblies, laptop upgrades, and printer sales & servicing in Saibabacolony, Coimbatore. Care for our customers.</p>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Services</h3>
+        <ul>
+          <li><a href="/#services">Printer Servicing</a></li>
+          <li><a href="/#services">System Sales</a></li>
+          <li><a href="/store">Dealer Store</a></li>
+          <li><a href="/#services">Custom PC Builds</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Core Links</h3>
+        <ul>
+          <li><a href="/#home">Home Profile</a></li>
+          <li><a href="/#services">Core Capabilities</a></li>
+          <li><a href="/store" style="color:var(--color-primary); font-weight:700;"><i class="fa-solid fa-store"></i> Dealer Store</a></li>
+          <li><a href="/#offers">Active Deals</a></li>
+          <li><a href="/#gallery">Production Portfolio</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h3>Operational Hub</h3>
+        <ul>
+          <li>Mon - Sat: 9:00 AM - 8:00 PM</li>
+          <li>N.S.R. Road, Coimbatore</li>
+          <li>GST Regd. Provider</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Vell Print Technology. All Rights Reserved. | Made by <a href="http://www.rexonsofttech.in" target="_blank" style="color:var(--color-primary); font-weight:700;">RexonSoftTech</a> (Contact: 7871654777)</p>
+      <div style="display:flex; gap:1.5rem; font-size: 1.2rem;">
+        <a href="tel:+919894833377"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="mailto:vellprint@gmail.com"><i class="fa-regular fa-envelope"></i></a>
+        <a href="/#home"><i class="fa-solid fa-arrow-up"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js?v=17"></script>
+  <!-- Client script for dealer registration validation and post request -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('dealerRegisterForm');
+      const successMsg = document.getElementById('success-message');
+      const cartBadge = document.getElementById('cart-badge');
+
+      // Update Cart Badge Count
+      function updateCartBadge() {
+        const cart = JSON.parse(localStorage.getItem('vell_cart') || '[]');
+        const count = cart.reduce((sum, item) => sum + item.qty, 0);
+        if (count > 0) {
+          cartBadge.textContent = count;
+          cartBadge.style.display = 'inline-block';
+        } else {
+          cartBadge.style.display = 'none';
+        }
+      }
+      updateCartBadge();
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Collect fields
+        const business_name = document.getElementById('regBusinessName').value.trim();
+        const dealer_name = document.getElementById('regDealerName').value.trim();
+        const gst = document.getElementById('regGST').value.trim();
+        const pan = document.getElementById('regPAN').value.trim();
+        const address = document.getElementById('regAddress').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const city = document.getElementById('regCity').value.trim();
+        const state = document.getElementById('regState').value.trim();
+        const pincode = document.getElementById('regPincode').value.trim();
+        const business_type = document.getElementById('regBusinessType').value;
+
+        try {
+          const res = await fetch('/api/dealers/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              business_name, dealer_name, gst, pan, address, phone, email, city, state, pincode, business_type
+            })
+          });
+          const data = await res.json();
+          if (data.success) {
+            form.style.display = 'none';
+            successMsg.style.display = 'block';
+          } else {
+            alert(data.message || 'Registration request failed. Try again.');
+          }
+        } catch (err) {
+          console.error('Registration API error:', err);
+          alert('Failed to connect to backend server.');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

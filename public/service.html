@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" class="light-theme">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+  <title>Service Request - Log a Complaint or Ticket | Vell Print Technology</title>
+  
+  <meta name="description" content="Submit a service or complaint ticket for your printer, laptop, or desktop equipment. Fast turnaround by Vell Print Technology, Coimbatore.">
+  <meta name="theme-color" content="#FF5722">
+  
+  <link rel="stylesheet" href="/css/style.css?v=17">
+  
+  <!-- Async loading of Google Fonts & FontAwesome to prevent blocking -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+
+  
+  <script src="/config.js"></script>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="scrolled">
+    <div class="container nav-wrapper">
+      <a href="/" class="logo">
+        <img src="/logo.png" alt="Vell Print Technology Logo" class="logo-img">
+      </a>
+      
+      <nav id="navbar">
+        <ul>
+          <li><a href="/#home">Home</a></li>
+          <li><a href="/#services">Services</a></li>
+          <li><a href="/#motto">Our Motto</a></li>
+          <li><a href="/#partners">Partners</a></li>
+          <li><a href="/store"><i class="fa-solid fa-store"></i> Dealer Store</a></li>
+          <li><a href="/cart" style="position:relative;"><i class="fa-solid fa-cart-shopping"></i> Cart <span id="cart-badge" style="display:none; background:var(--color-primary); color:white; font-size:0.7rem; padding: 2px 6px; border-radius:50%; position:absolute; top:-8px; right:-12px;">0</span></a></li>
+          <li><a href="/service" style="color: var(--color-primary); font-weight:700;"><i class="fa-solid fa-ticket"></i> Service</a></li>
+          <li><a href="/register"><i class="fa-solid fa-user-plus"></i> Register</a></li>
+          
+        </ul>
+      </nav>
+      
+      <div style="display:flex; align-items:center; gap:1.25rem;">
+        
+        <div class="menu-toggle" id="mobile-menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Service Request Container -->
+  <div class="admin-container" style="max-width:900px; margin-top:9.5rem;">
+    
+    <!-- Page Header -->
+    <div style="text-align:center; margin-bottom:2.5rem;" class="reveal">
+      <h1 class="gradient-text"><i class="fa-solid fa-ticket"></i> Log a Service Request</h1>
+      <p style="color:var(--theme-text-muted); margin-top:0.5rem; font-size:1.05rem;">Submit a service or complaint ticket for your printer, laptop, or desktop equipment.</p>
+    </div>
+
+    <!-- Success Message (hidden by default) -->
+    <div id="ticket-success" style="display:none; background:linear-gradient(135deg, hsl(145, 65%, 96%), hsl(145, 55%, 92%)); border:1px solid hsl(145, 50%, 70%); border-radius:var(--border-radius-lg); padding:2.5rem; text-align:center; margin-bottom:2rem;">
+      <i class="fa-solid fa-circle-check" style="font-size:3rem; color:hsl(145, 60%, 42%); margin-bottom:1rem;"></i>
+      <h2 style="color:hsl(145, 55%, 30%); margin-bottom:0.5rem;">Ticket Submitted Successfully!</h2>
+      <p style="color:hsl(145, 40%, 35%); font-size:1.05rem;" id="ticket-success-msg">Your service ticket has been submitted successfully! Reference: <strong id="ticket-ref">#VPT-XXXX</strong>. Our team will contact you within 4 hours.</p>
+    </div>
+
+    <!-- Service Request Form -->
+    <form id="serviceForm" class="contact-form-wrapper reveal" style="padding:2.5rem; border-radius:var(--border-radius-lg); background:var(--theme-card); border:1px solid var(--theme-border);">
+      
+      <h3 style="margin-bottom:1.5rem; border-bottom:1px solid var(--theme-border); padding-bottom:0.75rem;"><i class="fa-solid fa-clipboard-list"></i> Service Ticket Details</h3>
+
+      <!-- Row: Customer Name + Company -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+        <div class="form-group">
+          <label for="customerName">Customer Name <span style="color:hsl(0,70%,55%);">*</span></label>
+          <input type="text" id="customerName" name="customer_name" placeholder="Full name" required>
+        </div>
+        <div class="form-group">
+          <label for="companyName">Company / Organization Name</label>
+          <input type="text" id="companyName" name="company_name" placeholder="Optional">
+        </div>
+      </div>
+
+      <!-- Row: Phone + Email -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number <span style="color:hsl(0,70%,55%);">*</span></label>
+          <input type="tel" id="phoneNumber" name="phone" placeholder="e.g. 9876543210" required>
+        </div>
+        <div class="form-group">
+          <label for="emailAddress">Email Address</label>
+          <input type="email" id="emailAddress" name="email" placeholder="Optional">
+        </div>
+      </div>
+
+      <!-- Row: Equipment Type + Brand -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+        <div class="form-group">
+          <label for="equipmentType">Equipment Type <span style="color:hsl(0,70%,55%);">*</span></label>
+          <select id="equipmentType" name="equipment_type" required>
+            <option value="">-- Select Equipment --</option>
+            <option value="Printer">Printer</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Desktop">Desktop</option>
+            <option value="Networking">Networking</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="brand">Brand</label>
+          <input type="text" id="brand" name="brand" placeholder="e.g. HP, Canon, Epson">
+        </div>
+      </div>
+
+      <!-- Row: Model Number + Issue Category -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+        <div class="form-group">
+          <label for="modelNumber">Model Number</label>
+          <input type="text" id="modelNumber" name="model_number" placeholder="e.g. LaserJet Pro M404dn">
+        </div>
+        <div class="form-group">
+          <label for="issueCategory">Issue Category <span style="color:hsl(0,70%,55%);">*</span></label>
+          <select id="issueCategory" name="issue_category" required>
+            <option value="">-- Select Issue --</option>
+            <option value="Paper Jam">Paper Jam</option>
+            <option value="Print Quality">Print Quality</option>
+            <option value="Toner/Ink Issue">Toner/Ink Issue</option>
+            <option value="Hardware Failure">Hardware Failure</option>
+            <option value="Software/Driver">Software/Driver</option>
+            <option value="Network Connectivity">Network Connectivity</option>
+            <option value="Screen/Display">Screen/Display</option>
+            <option value="Battery">Battery</option>
+            <option value="Performance">Performance</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row: Priority + Preferred Date -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+        <div class="form-group">
+          <label for="priority">Priority</label>
+          <select id="priority" name="priority">
+            <option value="Normal">Normal</option>
+            <option value="Urgent">Urgent</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="preferredDate">Preferred Service Date</label>
+          <input type="date" id="preferredDate" name="preferred_date">
+        </div>
+      </div>
+
+      <!-- Issue Description -->
+      <div class="form-group">
+        <label for="issueDescription">Issue Description <span style="color:hsl(0,70%,55%);">*</span></label>
+        <textarea id="issueDescription" name="issue_description" rows="5" placeholder="Describe the problem in detail (minimum 20 characters)..." required minlength="20"></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <div style="text-align:center; margin-top:1.5rem;">
+        <button type="submit" class="cta-btn" id="submitBtn" style="padding:0.85rem 3rem; font-size:1rem;">
+          <i class="fa-solid fa-paper-plane"></i> Submit Service Request
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <img src="/logo.png" alt="Vell Print Technology Logo" class="logo-img">
+        </a>
+        <p>Premium center for all custom computer assemblies, laptop upgrades, and printer sales & servicing in Saibabacolony, Coimbatore. Care for our customers.</p>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Services</h3>
+        <ul>
+          <li><a href="/#services">Printer Servicing</a></li>
+          <li><a href="/#services">System Sales</a></li>
+          <li><a href="/store">Dealer Store</a></li>
+          <li><a href="/#services">Custom PC Builds</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Core Links</h3>
+        <ul>
+          <li><a href="/#home">Home Profile</a></li>
+          <li><a href="/#services">Core Capabilities</a></li>
+          <li><a href="/store"><i class="fa-solid fa-store"></i> Dealer Store</a></li>
+          <li><a href="/#offers">Active Deals</a></li>
+          <li><a href="/#gallery">Production Portfolio</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h3>Operational Hub</h3>
+        <ul>
+          <li>Mon - Sat: 9:00 AM - 8:00 PM</li>
+          <li>N.S.R. Road, Coimbatore</li>
+          <li>GST Regd. Provider</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Vell Print Technology. All Rights Reserved. | Made by <a href="http://www.rexonsofttech.in" target="_blank" style="color:var(--color-primary); font-weight:700;">RexonSoftTech</a> (Contact: 7871654777)</p>
+      <div style="display:flex; gap:1.5rem; font-size: 1.2rem;">
+        <a href="tel:+919894833377"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="mailto:vellprint@gmail.com"><i class="fa-regular fa-envelope"></i></a>
+        <a href="/#home"><i class="fa-solid fa-arrow-up"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js?v=17"></script>
+  <!-- Service Page Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const serviceForm = document.getElementById('serviceForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const ticketSuccess = document.getElementById('ticket-success');
+      const ticketRef = document.getElementById('ticket-ref');
+      const cartBadge = document.getElementById('cart-badge');
+
+      // Update Cart Badge Count
+      function updateCartBadge() {
+        const cart = JSON.parse(localStorage.getItem('vell_cart') || '[]');
+        const count = cart.reduce((sum, item) => sum + item.qty, 0);
+        if (count > 0) {
+          cartBadge.textContent = count;
+          cartBadge.style.display = 'inline-block';
+        } else {
+          cartBadge.style.display = 'none';
+        }
+      }
+      updateCartBadge();
+
+      // Set minimum date to today
+      const preferredDate = document.getElementById('preferredDate');
+      const today = new Date().toISOString().split('T')[0];
+      preferredDate.setAttribute('min', today);
+
+      // Form submission
+      serviceForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validate description length
+        const description = document.getElementById('issueDescription').value.trim();
+        if (description.length < 20) {
+          alert('Please provide a more detailed description (minimum 20 characters).');
+          return;
+        }
+
+        // Disable button & show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+        try {
+          const formData = new FormData(serviceForm);
+          const payload = {};
+          formData.forEach((value, key) => {
+            payload[key] = value;
+          });
+
+          const res = await fetch('/api/service-tickets', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await res.json();
+
+          if (data.success) {
+            // Generate reference number
+            const refNum = data.reference || '#VPT-' + String(Math.floor(1000 + Math.random() * 9000));
+            ticketRef.textContent = refNum;
+
+            // Show success, hide form
+            serviceForm.style.display = 'none';
+            ticketSuccess.style.display = 'block';
+
+            // Scroll to success message
+            ticketSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            alert(data.message || 'Failed to submit the service request. Please try again.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Service Request';
+          }
+        } catch (err) {
+          console.error('Service ticket submission error:', err);
+          alert('Network error. Please check your connection and try again.');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Service Request';
+        }
+      });
+    });
+  </script>
+
+  <style>
+    /* Responsive: stack two-column rows on mobile */
+    @media (max-width: 640px) {
+      #serviceForm > div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+      }
+    }
+  </style>
+</body>
+</html>
