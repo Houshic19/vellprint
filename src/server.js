@@ -27,7 +27,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet({
   contentSecurityPolicy: false // Disable CSP temporarily to avoid breaking inline scripts/styles until properly configured
 }));
-const allowedOrigins = ["https://vellprint.in", "https://admin.vellprint.in", "http://localhost:3000", "http://127.0.0.1:3000", "http://admin.localhost:3000", "http://localhost:8788"];
+const allowedOrigins = [
+  "https://vellprint.in",
+  "https://www.vellprint.in",
+  "https://admin.vellprint.in",
+  "https://vellprint-admin.workers.dev",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "http://admin.localhost:3000",
+  "http://localhost:8788"
+];
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.endsWith(".pages.dev")) {
