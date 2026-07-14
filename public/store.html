@@ -239,7 +239,7 @@
       // Fetch categories & brands filters on load
       async function loadMetadata() {
         try {
-          const res = await fetch('/api/store/metadata');
+          const res = await fetch(window.API_BASE_URL + '/api/store/metadata');
           const data = await res.json();
           if (data.success) {
             data.brands.forEach(b => {
@@ -274,7 +274,7 @@
             params.append('search', storeSearchInput.value);
           }
 
-          const res = await fetch(`/api/products?${params.toString()}`);
+          const res = await fetch(window.API_BASE_URL + `/api/products?${params.toString()}`);
           const data = await res.json();
           if (data.success) {
             productsCache = data.products;
