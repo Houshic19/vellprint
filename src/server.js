@@ -5,7 +5,7 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-const db = require('./config/db');
+const db = process.env.DB_TYPE === 'sqlite' ? require('./config/sqlite_db') : require('./config/db');
 const auth = require('./middleware/auth');
 const mailer = require('./utils/mailer');
 const helmet = require('helmet');
