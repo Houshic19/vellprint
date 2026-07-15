@@ -57,6 +57,7 @@ export async function onRequestGet(context) {
         "availability": product.availability === 'In Stock' ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
         "url": `${url.origin}/store/product/${product.seo_url}`
       }
+    };
     // Build dynamic title with part number
     let dynamicTitle = product.meta_title || `${product.name} | Vell Print Technology India`;
     if (!product.meta_title && product.part_number) {
