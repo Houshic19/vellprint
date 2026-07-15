@@ -59,9 +59,27 @@ export async function onRequestGet(context) {
       }
     };
 
+    // Build dynamic title with part number
+    let dynamicTitle = product.meta_title || `${product.name} | Vell Print Technology`;
+    if (!product.meta_title && product.part_number) {
+      dynamicTitle = `${product.name} (${product.part_number}) - Buy Online | Vell Print Technology`;
+    }
+
+    // Build dynamic description with part numbers
+    let dynamicDesc = product.meta_description || product.short_description;
+    if (!product.meta_description) {
+      const parts = [];
+      if (product.part_number) parts.push(`Part Number: ${product.part_number}`);
+      if (product.oem_part_number) parts.push(`OEM: ${product.oem_part_number}`);
+      if (product.alternate_part_number) parts.push(`Alt: ${product.alternate_part_number}`);
+      if (parts.length > 0) {
+         dynamicDesc += ` ${parts.join(', ')}.`;
+      }
+    }
+
     // Replace Placeholders
-    html = html.replace(/{{META_TITLE}}/g, product.meta_title || `${product.name} | Vell Print Technology`);
-    html = html.replace(/{{META_DESCRIPTION}}/g, product.meta_description || product.short_description);
+    html = html.replace(/{{META_TITLE}}/g, dynamicTitle);
+    html = html.replace(/{{META_DESCRIPTION}}/g, dynamicDesc);
     html = html.replace(/{{PRODUCT_NAME}}/g, product.name);
     html = html.replace(/{{PRODUCT_IMAGE}}/g, `${apiBaseUrl}${product.image_path}`);
     html = html.replace(/{{BREADCRUMB_SCHEMA}}/g, JSON.stringify(breadcrumbSchema, null, 2));
