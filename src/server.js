@@ -229,6 +229,74 @@ app.delete('/api/admin/gallery/:id', auth, async (req, res) => {
 
 // --- PUBLIC SHOP APIs ---
 
+app.get('/api/feed.xml', async (req, res) => {
+  try {
+    const products = await db.getProducts({});
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
+  <channel>
+    <title>Vell Print Technology India</title>
+    <link>https://vellprint.in/store</link>
+    <description>Premium printer spares, laptop upgrades, and parts.</description>`;
+
+    products.forEach(p => {
+      // Escape special characters for XML
+      const escapeXml = (unsafe) => {
+        if (!unsafe) return '';
+        return String(unsafe).replace(/[<>&'"]/g, (c) => {
+          switch (c) {
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '&': return '&amp;';
+            case '\'': return '&apos;';
+            case '"': return '&quot;';
+          }
+        });
+      };
+
+      const title = escapeXml(p.name);
+      const desc = escapeXml(p.short_description || p.name);
+      const link = `https://vellprint.in/store/product/${p.seo_url}`;
+      let imageUrl = p.image_path || '';
+      if (imageUrl && !imageUrl.startsWith('http')) {
+        imageUrl = `https://vellprint.in${imageUrl}`;
+      }
+      
+      const availability = p.availability === 'In Stock' ? 'in_stock' : 'out_of_stock';
+      const brand = escapeXml(p.brand_name || 'Vell Print');
+      const mpn = escapeXml(p.part_number || p.sku || `VP-${p.id}`);
+      
+      // Google requires price, but since price is hidden to non-dealers, we'll use a placeholder or omit if allowed.
+      // Actually, Merchant Center requires a price. If it's a B2B store without public prices, 
+      // we can set it to 0.00 INR, or if we must, we can set a dummy price. Let's set 0.00 INR.
+      const price = "0.00 INR";
+
+      xml += `
+    <item>
+      <g:id>${p.id}</g:id>
+      <g:title>${title}</g:title>
+      <g:description>${desc}</g:description>
+      <g:link>${link}</g:link>
+      <g:image_link>${imageUrl}</g:image_link>
+      <g:condition>new</g:condition>
+      <g:availability>${availability}</g:availability>
+      <g:price>${price}</g:price>
+      <g:brand>${brand}</g:brand>
+      <g:mpn>${mpn}</g:mpn>
+    </item>`;
+    });
+
+    xml += `
+  </channel>
+</rss>`;
+
+    res.set('Content-Type', 'application/xml');
+    res.send(xml);
+  } catch (err) {
+    console.error('Feed generation error:', err);
+    res.status(500).send('Error generating feed');
+  }
+});
 // GET Brands & Categories Metadata
 app.get('/api/store/metadata', async (req, res) => {
   try {

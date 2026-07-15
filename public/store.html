@@ -83,19 +83,26 @@
           </div>
 
           <div class="form-group">
-            <label for="filterBrand">Brand</label>
-            <select id="filterBrand" name="brand_id">
-              <option value="">All Brands</option>
+            <label>Brand</label>
+            <div id="filterBrand" style="display:flex; flex-direction:column; gap:0.5rem; max-height: 150px; overflow-y: auto; padding: 0.5rem; border: 1px solid var(--theme-border); border-radius: 4px; background: var(--theme-bg);">
               <!-- Populated via API -->
-            </select>
+            </div>
           </div>
           
           <div class="form-group">
-            <label for="filterCategory">Category</label>
-            <select id="filterCategory" name="category_id">
-              <option value="">All Categories</option>
+            <label>Category</label>
+            <div id="filterCategory" style="display:flex; flex-direction:column; gap:0.5rem; max-height: 150px; overflow-y: auto; padding: 0.5rem; border: 1px solid var(--theme-border); border-radius: 4px; background: var(--theme-bg);">
               <!-- Populated via API -->
-            </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Availability</label>
+            <div style="display:flex; flex-direction:column; gap:0.5rem; padding: 0.5rem; border: 1px solid var(--theme-border); border-radius: 4px; background: var(--theme-bg);">
+              <label style="text-transform:none; font-weight:normal; display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                <input type="checkbox" name="in_stock" value="1" style="width:auto; min-height:auto;"> In Stock Only
+              </label>
+            </div>
           </div>
 
           <div class="form-group">
@@ -244,16 +251,21 @@
           const data = await res.json();
           if (data.success) {
             data.brands.forEach(b => {
-              const opt = document.createElement('option');
-              opt.value = b.id;
-              opt.textContent = b.name;
-              filterBrand.appendChild(opt);
+              const label = document.createElement('label');
+              label.style.cssText = "text-transform:none; font-weight:normal; display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.9rem;";
+              label.innerHTML = `<input type="checkbox" name="brand_id" value="${b.id}" style="width:auto; min-height:auto;"> ${b.name}`;
+              filterBrand.appendChild(label);
             });
             data.categories.forEach(c => {
-              const opt = document.createElement('option');
-              opt.value = c.id;
-              opt.textContent = c.name;
-              filterCategory.appendChild(opt);
+              const label = document.createElement('label');
+              label.style.cssText = "text-transform:none; font-weight:normal; display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.9rem;";
+              label.innerHTML = `<input type="checkbox" name="category_id" value="${c.id}" style="width:auto; min-height:auto;"> ${c.name}`;
+              filterCategory.appendChild(label);
+            });
+            
+            // Re-attach listeners to the new checkboxes
+            filterForm.querySelectorAll('input[type="checkbox"]').forEach(c => {
+              c.addEventListener('change', fetchCatalog);
             });
           }
         } catch (err) {
@@ -384,8 +396,6 @@
       }
 
       // Filter trigger listeners
-      filterBrand.addEventListener('change', fetchCatalog);
-      filterCategory.addEventListener('change', fetchCatalog);
       filterForm.querySelectorAll('input[type="checkbox"]').forEach(c => {
         c.addEventListener('change', fetchCatalog);
       });

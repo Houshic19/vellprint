@@ -3,6 +3,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 
 const db = new Database(path.join(__dirname, '../../data/vellprint.sqlite'));
+db.pragma('journal_mode = WAL');
 
 module.exports = {
   initDB: async () => { console.log('SQLite DB initialized'); },
@@ -38,8 +39,31 @@ module.exports = {
       WHERE 1=1 `;
     
     const params = {};
-    if (filters.brand_id) { sql += ' AND p.brand_id = @brand_id'; params.brand_id = filters.brand_id; }
-    if (filters.category_id) { sql += ' AND p.category_id = @category_id'; params.category_id = filters.category_id; }
+    if (filters.brand_id) {
+      const brands = Array.isArray(filters.brand_id) ? filters.brand_id : [filters.brand_id];
+      if (brands.length > 0) {
+        sql += ` AND p.brand_id IN (${brands.map(() => '?').join(', ')})`;
+        brands.forEach((b, i) => params[`brand_${i}`] = b); // Hack: better-sqlite3 doesn't easily mix named and positional if not careful.
+        // Actually, let's just use named parameters dynamically
+        sql = sql.replace(`IN (${brands.map(() => '?').join(', ')})`, `IN (${brands.map((_, i) => `@brand_${i}`).join(', ')})`);
+      }
+    }
+    if (filters.category_id) {
+      const cats = Array.isArray(filters.category_id) ? filters.category_id : [filters.category_id];
+      if (cats.length > 0) {
+        sql += ` AND p.category_id IN (${cats.map((_, i) => `@cat_${i}`).join(', ')})`;
+        cats.forEach((c, i) => params[`cat_${i}`] = c);
+      }
+    }
+    if (filters.in_stock) {
+      sql += ` AND p.availability = 'In Stock'`;
+    }
+    
+    // Add product badges filtering
+    if (filters.is_featured) { sql += ` AND p.is_featured = 1`; }
+    if (filters.is_popular) { sql += ` AND p.is_popular = 1`; }
+    if (filters.is_new_arrival) { sql += ` AND p.is_new_arrival = 1`; }
+
     if (filters.search) { 
       sql += ' AND (LOWER(p.name) LIKE @search OR LOWER(p.part_number) LIKE @search OR LOWER(p.oem_part_number) LIKE @search OR LOWER(p.alternate_part_number) LIKE @search)';
       params.search = `%${filters.search.toLowerCase()}%`;
