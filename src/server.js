@@ -135,8 +135,8 @@ app.post('/api/admin/login', loginLimiter, async (req, res) => {
     );
     res.cookie('token', token, {
       httpOnly: true,
-      
       secure: true, sameSite: 'none',
+      domain: '.vellprint.in',
       maxAge: 24 * 60 * 60 * 1000 // 24h
     });
     return res.json({ success: true, message: 'Authentication successful.', username: admin.username });
