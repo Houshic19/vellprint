@@ -57,12 +57,10 @@ export async function onRequestGet(context) {
         "availability": product.availability === 'In Stock' ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
         "url": `${url.origin}/store/product/${product.seo_url}`
       }
-    };
-
     // Build dynamic title with part number
-    let dynamicTitle = product.meta_title || `${product.name} | Vell Print Technology`;
+    let dynamicTitle = product.meta_title || `${product.name} | Vell Print Technology India`;
     if (!product.meta_title && product.part_number) {
-      dynamicTitle = `${product.name} (${product.part_number}) - Buy Online | Vell Print Technology`;
+      dynamicTitle = `${product.name} (${product.part_number}) - Buy Online in India | Vell Print Technology`;
     }
 
     // Build dynamic description with part numbers
@@ -75,6 +73,7 @@ export async function onRequestGet(context) {
       if (parts.length > 0) {
          dynamicDesc += ` ${parts.join(', ')}.`;
       }
+      dynamicDesc += ` Shipping across India. Buy official IT spare parts online from Vell Print Technology.`;
     }
 
     // Replace Placeholders
