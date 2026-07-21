@@ -80,13 +80,18 @@
       0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(0,0,0,0)); }
       50% { transform: scale(1.05); filter: drop-shadow(0 10px 15px rgba(255,255,255,0.1)); }
     }
+    
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body style="display:flex; flex-direction:column; min-height:100vh; align-items:center; justify-content:center; background:var(--theme-bg);">
 
   <div class="maintenance-bg"></div>
 
-  <div class="maintenance-card reveal">
+  <div class="maintenance-card" style="animation: slideUpFade 0.8s ease-out forwards;">
     <i class="fa-solid fa-screwdriver-wrench pulse-icon"></i>
     <h1 class="gradient-text" style="font-size:2.75rem; margin-bottom:1.5rem; font-family:var(--font-heading); font-weight:800; letter-spacing:-0.5px;">System Upgrade</h1>
     <p style="color:var(--theme-text-muted); font-size:1.15rem; line-height:1.7; margin-bottom:2.5rem; max-width: 500px; margin-left: auto; margin-right: auto;">
