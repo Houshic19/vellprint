@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="light-theme">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,20 +7,137 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <link rel="stylesheet" href="/css/style.css?v=17">
-</head>
-<body style="display:flex; flex-direction:column; min-height:100vh; align-items:center; justify-content:center; background:var(--theme-bg);">
+  <style>
+    :root {
+      --color-primary: #FF5722;
+      --color-primary-dark: #E64A19;
+      --color-secondary: #FF9800;
+      --theme-bg: #f5f5f5;
+      --theme-card: #ffffff;
+      --theme-text: #1a1a1a;
+      --theme-text-muted: #666666;
+      --theme-border: #e0e0e0;
+      --theme-shadow: rgba(0, 0, 0, 0.05);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme-bg: #0d0d0d;
+        --theme-card: #141414;
+        --theme-text: #f0f0f0;
+        --theme-text-muted: #a0a0a0;
+        --theme-border: #2a2a2a;
+        --theme-shadow: rgba(0, 0, 0, 0.5);
+      }
+    }
 
-  <div style="text-align:center; padding:3rem; max-width:600px; background:var(--theme-card); border-radius:var(--border-radius-lg); box-shadow:0 10px 30px rgba(0,0,0,0.05); border:1px solid var(--theme-border);">
-    <i class="fa-solid fa-person-digging" style="font-size:4rem; color:var(--color-primary); margin-bottom:1.5rem;"></i>
-    <h1 class="gradient-text" style="font-size:2.5rem; margin-bottom:1rem;">System Under Maintenance</h1>
-    <p style="color:var(--theme-text-muted); font-size:1.1rem; line-height:1.6; margin-bottom:2rem;">
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Outfit', sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      background: var(--theme-bg);
+      color: var(--theme-text);
+      padding: 1rem;
+    }
+
+    .maintenance-card {
+      text-align: center;
+      padding: 3rem 2rem;
+      max-width: 600px;
+      width: 100%;
+      background: var(--theme-card);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px var(--theme-shadow);
+      border: 1px solid var(--theme-border);
+    }
+
+    .icon-wrapper {
+      font-size: 4rem;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+    }
+
+    .gradient-text {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .maintenance-text {
+      color: var(--theme-text-muted);
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn {
+      background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+      color: white;
+      padding: 0.85rem 1.75rem;
+      border-radius: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(255, 87, 34, 0.25);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 87, 34, 0.35);
+    }
+
+    .cta-btn-outline {
+      background: transparent;
+      border: 2px solid var(--color-primary);
+      color: var(--color-primary);
+      box-shadow: none;
+    }
+
+    .cta-btn-outline:hover {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 15px rgba(255, 87, 34, 0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="maintenance-card">
+    <div class="icon-wrapper">
+      <i class="fa-solid fa-person-digging"></i>
+    </div>
+    <h1 class="gradient-text">System Under Maintenance</h1>
+    <p class="maintenance-text">
       Our backend systems are currently undergoing scheduled maintenance to improve your experience. The dealer store will be back online shortly. 
     </p>
-    <div style="display:flex; gap:1rem; justify-content:center;">
+    <div class="btn-group">
       <a href="/" class="cta-btn cta-btn-outline"><i class="fa-solid fa-house"></i> Go to Homepage</a>
       <a href="https://wa.me/919894833377" class="cta-btn" target="_blank"><i class="fa-brands fa-whatsapp"></i> Contact Support</a>
     </div>
