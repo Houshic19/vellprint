@@ -1170,4 +1170,34 @@ document.addEventListener('DOMContentLoaded', () => {
     loadAdminTestimonials();
   };
 
+  // Generate Master PDF Catalog
+  const btnGenerateCatalog = document.getElementById('btn-generate-catalog');
+  if (btnGenerateCatalog) {
+    btnGenerateCatalog.addEventListener('click', async () => {
+      btnGenerateCatalog.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...';
+      btnGenerateCatalog.disabled = true;
+      try {
+        const res = await fetch(window.API_BASE_URL + '/api/admin/catalog/pdf', {
+          credentials: 'include'
+        });
+        if (!res.ok) throw new Error('Failed to generate PDF');
+        
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `Vell_Print_Technology_Catalog_${new Date().toISOString().split('T')[0]}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } catch (err) {
+        alert('Error generating PDF catalog. Please try again.');
+      } finally {
+        btnGenerateCatalog.innerHTML = '<i class="fa-solid fa-file-pdf"></i> Generate PDF Catalog';
+        btnGenerateCatalog.disabled = false;
+      }
+    });
+  }
+
 });

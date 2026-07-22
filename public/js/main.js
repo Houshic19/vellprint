@@ -388,4 +388,127 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
   }
 
+  // ============================================================
+  // Live WhatsApp Chat Integration
+  // ============================================================
+  (function initWhatsAppWidget() {
+    // Avoid duplicate widgets if loaded multiple times
+    if (document.getElementById('whatsapp-floating-widget')) return;
+
+    // Detect if we are on a product page to pre-fill the message
+    let initialMessage = "Hi Vell Print, I have a question about my account/order.";
+    const productTitleEl = document.querySelector('#productTitle');
+    if (productTitleEl && productTitleEl.textContent) {
+      initialMessage = `Hi Vell Print, I have a question about: ${productTitleEl.textContent}`;
+    }
+
+    const encodedMessage = encodeURIComponent(initialMessage);
+    const waUrl = `https://wa.me/919894833377?text=${encodedMessage}`;
+
+    const waWidget = document.createElement('a');
+    waWidget.id = 'whatsapp-floating-widget';
+    waWidget.href = waUrl;
+    waWidget.target = '_blank';
+    waWidget.className = 'whatsapp-fab';
+    waWidget.innerHTML = `
+      <i class="fa-brands fa-whatsapp"></i>
+    `;
+    document.body.appendChild(waWidget);
+  })();
+
+  // ============================================================
+  // Social Proof Toasts
+  // ============================================================
+  (function initSocialProof() {
+    const products = ['HP Printhead', 'Epson Maintenance Box', 'Canon Ink Cartridge', 'Dell Laptop Battery', 'Networking Cable'];
+    const cities = ['Chennai', 'Bangalore', 'Coimbatore', 'Madurai', 'Kochi', 'Hyderabad'];
+
+    const toast = document.createElement('div');
+    toast.className = 'social-toast';
+    toast.innerHTML = `
+      <div class="social-toast-icon"><i class="fa-solid fa-shopping-bag"></i></div>
+      <div class="social-toast-text" id="social-toast-msg"></div>
+    `;
+    document.body.appendChild(toast);
+
+    function showToast() {
+      const p = products[Math.floor(Math.random() * products.length)];
+      const c = cities[Math.floor(Math.random() * cities.length)];
+      document.getElementById('social-toast-msg').innerHTML = `A dealer from <strong>${c}</strong> just enquired about <strong>${p}</strong>.<br><span>Just now</span>`;
+      
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 5000);
+    }
+
+    // Trigger every 30-45 seconds
+    setInterval(() => {
+      showToast();
+    }, 30000 + Math.random() * 15000);
+  })();
+
+  // ============================================================
+  // Exit-Intent Callback Popup
+  // ============================================================
+  (function initExitIntent() {
+    if (localStorage.getItem('vell_exit_intent_shown')) return;
+
+    const modalHtml = `
+      <div id="exit-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:var(--theme-card); padding:2rem; border-radius:12px; max-width:400px; width:90%; position:relative; text-align:center;">
+          <button id="close-exit" style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:1.5rem; cursor:pointer; color:var(--theme-text);">&times;</button>
+          <h2 style="margin-bottom:1rem; color:var(--color-primary);"><i class="fa-solid fa-phone-volume"></i> Leaving so soon?</h2>
+          <p style="margin-bottom:1.5rem; color:var(--theme-text-muted);">Need a custom bulk quote? Drop your number and our B2B sales team will call you back instantly with our best pricing!</p>
+          <form id="exit-form" style="display:flex; flex-direction:column; gap:1rem;">
+            <input type="text" id="exit-name" placeholder="Your Name" required style="padding:0.75rem; border:1px solid var(--theme-border); border-radius:4px; background:var(--theme-bg); color:var(--theme-text);">
+            <input type="tel" id="exit-phone" placeholder="Your Phone Number" required style="padding:0.75rem; border:1px solid var(--theme-border); border-radius:4px; background:var(--theme-bg); color:var(--theme-text);">
+            <button type="submit" class="cta-btn" style="width:100%;">Request Callback</button>
+          </form>
+          <p id="exit-success" style="display:none; color:hsl(120, 70%, 45%); margin-top:1rem; font-weight:bold;">We'll call you shortly!</p>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    const modal = document.getElementById('exit-modal');
+    const form = document.getElementById('exit-form');
+
+    const handleMouseLeave = (e) => {
+      if (e.clientY < 50) {
+        modal.style.display = 'flex';
+        localStorage.setItem('vell_exit_intent_shown', 'true');
+        document.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+    
+    // Only add listener on desktop
+    if (window.innerWidth > 768) {
+      document.addEventListener('mouseleave', handleMouseLeave);
+    }
+
+    document.getElementById('close-exit').addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('exit-name').value;
+      const phone = document.getElementById('exit-phone').value;
+
+      try {
+        await fetch(window.API_BASE_URL + '/api/callbacks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone, message: 'Exit intent callback request' })
+        });
+        form.style.display = 'none';
+        document.getElementById('exit-success').style.display = 'block';
+        setTimeout(() => modal.style.display = 'none', 3000);
+      } catch (err) {
+        console.error('Exit intent error:', err);
+      }
+    });
+  })();
+
 });

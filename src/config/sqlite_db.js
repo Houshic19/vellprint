@@ -133,5 +133,17 @@ module.exports = {
   
   getTestimonials: async () => db.prepare('SELECT * FROM testimonials ORDER BY created_at DESC').all(),
   addTestimonial: async (t) => db.prepare('INSERT INTO testimonials (name, company, content, rating) VALUES (@name, @company, @content, @rating)').run(t).lastInsertRowid,
-  deleteTestimonial: async (id) => db.prepare('DELETE FROM testimonials WHERE id = ?').run(id)
+  deleteTestimonial: async (id) => db.prepare('DELETE FROM testimonials WHERE id = ?').run(id),
+  
+  getAnalytics: async () => {
+    const totalProducts = db.prepare('SELECT COUNT(*) as count FROM products').get().count;
+    const totalDealers = db.prepare('SELECT COUNT(*) as count FROM dealer_registrations').get().count;
+    const totalEnquiries = db.prepare('SELECT COUNT(*) as count FROM cart_enquiries').get().count;
+    const totalBrands = db.prepare('SELECT COUNT(*) as count FROM brands').get().count;
+    
+    // For the chart, let's get the latest 7 days of enquiries by day
+    const recentEnquiries = db.prepare('SELECT date(created_at) as date, COUNT(*) as count FROM cart_enquiries GROUP BY date(created_at) ORDER BY date(created_at) DESC LIMIT 7').all();
+    
+    return { totalProducts, totalDealers, totalEnquiries, totalBrands, recentEnquiries };
+  }
 };

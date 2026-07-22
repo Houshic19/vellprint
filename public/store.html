@@ -79,7 +79,11 @@
           
           <div class="form-group">
             <label for="searchQuery">Search Product</label>
-            <input type="text" id="searchQuery" name="searchQuery" placeholder="e.g. Printer, Ink..." style="width:100%; border:1px solid var(--theme-border); border-radius:4px; padding:0.5rem; background:var(--theme-bg); color:var(--theme-text);">
+            <div style="position: relative;">
+              <input type="text" id="searchQuery" name="searchQuery" placeholder="e.g. Printer, Ink..." style="width:100%; border:1px solid var(--theme-border); border-radius:4px; padding:0.5rem; background:var(--theme-bg); color:var(--theme-text);">
+              <ul id="autocomplete-dropdown" style="display:none; position:absolute; top:100%; left:0; width:100%; background:var(--theme-card); border:1px solid var(--theme-border); border-top:none; border-radius:0 0 4px 4px; box-shadow:0 4px 12px var(--theme-shadow); list-style:none; padding:0; margin:0; z-index:1000; max-height:300px; overflow-y:auto;">
+              </ul>
+            </div>
           </div>
 
           <div class="form-group">
@@ -419,12 +423,17 @@
           // Trigger search fetch
           fetchCatalog();
           
-          // Populating autocomplete box locally from products cache
-          const matchQuery = query.toLowerCase();
-          const matches = productsCache.filter(p => 
-            p.name.toLowerCase().includes(matchQuery) ||
-            p.part_number.toLowerCase().includes(matchQuery)
-          ).slice(0, 5);
+          // Fetch autocomplete from backend API
+          let matches = [];
+          try {
+            const res = await fetch(window.API_BASE_URL + '/api/search/autocomplete?q=' + encodeURIComponent(query));
+            const data = await res.json();
+            if (data.success) {
+              matches = data.results;
+            }
+          } catch(e) {
+            console.error(e);
+          }
 
           if (matches.length > 0) {
             suggestionsBox.innerHTML = '';
@@ -436,9 +445,12 @@
               item.style.fontSize = '0.9rem';
               item.style.color = 'var(--theme-text)';
               item.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <strong>${m.name}</strong>
-                  <span style="font-size:0.75rem; color:var(--color-primary); font-weight:700;">${m.part_number}</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+                  <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <img src="${m.image_path}" style="width:30px; height:30px; object-fit:contain; border-radius:4px;">
+                    <strong>${m.name}</strong>
+                  </div>
+                  <span style="font-size:0.75rem; color:var(--color-primary); font-weight:700;">${m.brand || ''}</span>
                 </div>
               `;
               item.addEventListener('click', () => {

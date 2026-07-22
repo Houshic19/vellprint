@@ -320,6 +320,16 @@
             // Build the prefilled WhatsApp text message
             const whatsAppText = `🔔 *VELL PRINT TECHNOLOGY - B2B SPARES ENQUIRY*\n------------------------------------------\n🏢 *Business:* ${business_name}\n👤 *Contact:* ${dealer_name}\n🔢 *GST:* ${gst}\n📞 *Phone:* ${phone}\n📍 *Delivery:* ${delivery_location}\n📝 *Remarks:* ${remarks}\n\n📦 *SPARE PARTS REQUESTED:*\n${itemsList}\n\n🚀 _Requesting availability, stock check, and bulk pricing quotation._`;
             
+            if (apiData.pdfUrl) {
+              const link = document.createElement('a');
+              link.href = window.API_BASE_URL + apiData.pdfUrl;
+              link.download = `VellPrint-Quote-${apiData.enquiryId}.pdf`;
+              link.target = '_blank';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }
+
             // Clear checkout cart locally
             localStorage.removeItem('vell_cart');
             

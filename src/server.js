@@ -1,4 +1,5 @@
 const express = require('express');
+const PDFDocument = require('pdfkit');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
@@ -8,6 +9,8 @@ const dotenv = require('dotenv');
 const db = process.env.DB_TYPE === 'sqlite' ? require('./config/sqlite_db') : require('./config/db');
 const auth = require('./middleware/auth');
 const mailer = require('./utils/mailer');
+const applyWatermark = require('./utils/watermark');
+const { generateInvoicePDF } = require('./utils/pdfGenerator');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const xssClean = require('xss-clean');
@@ -93,6 +96,50 @@ const upload = multer({
   fileFilter: fileFilter,
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
+
+// SSR for Product SEO Open Graph
+app.get('/store/product/:seo_url', async (req, res) => {
+  try {
+    const product = await db.getProductBySeoUrl(req.params.seo_url);
+    const htmlPath = path.join(__dirname, '../public/product.html');
+    
+    if (!fs.existsSync(htmlPath)) {
+      return res.status(404).send('Product page template not found.');
+    }
+    
+    let html = fs.readFileSync(htmlPath, 'utf8');
+    
+    if (product) {
+      const pageTitle = `${product.name} | Vell Print Technology`;
+      const pageDesc = product.short_description || product.meta_description || '';
+      const pageImg = `https://vellprint.in${product.image_path}`;
+      const pageUrl = `https://vellprint.in/store/product/${product.seo_url}`;
+      
+      html = html.replace('{{META_TITLE}}', pageTitle);
+      html = html.replace('{{META_DESCRIPTION}}', pageDesc);
+      
+      // Inject Open Graph
+      const ogTags = `
+        <meta property="og:title" content="${pageTitle}">
+        <meta property="og:description" content="${pageDesc}">
+        <meta property="og:image" content="${pageImg}">
+        <meta property="og:url" content="${pageUrl}">
+        <meta property="og:type" content="product">
+        <meta name="twitter:card" content="summary_large_image">
+      `;
+      html = html.replace('</head>', `${ogTags}\n</head>`);
+    } else {
+      html = html.replace('{{META_TITLE}}', 'Product Not Found | Vell Print Technology');
+      html = html.replace('{{META_DESCRIPTION}}', 'Product not found.');
+    }
+    
+    res.send(html);
+  } catch (err) {
+    console.error('SSR Product Error:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
 
 // Initialize Database & Server
 async function startServer() {
@@ -207,6 +254,7 @@ app.post('/api/admin/gallery', auth, upload.single('image'), async (req, res) =>
   if (!req.file) return res.status(400).json({ success: false, message: 'Image file is required.' });
   try {
     const imagePath = `/uploads/${req.file.filename}`;
+    await applyWatermark(imagePath);
     const itemId = await db.addGalleryItem({ title: title || 'Gallery Image', image_path: imagePath });
     return res.json({ success: true, message: 'Gallery item uploaded successfully.', itemId });
   } catch (err) {
@@ -309,6 +357,27 @@ app.get('/api/store/metadata', async (req, res) => {
 });
 
 // GET Product Catalog List
+// Autocomplete API
+app.get('/api/search/autocomplete', async (req, res) => {
+  try {
+    const q = req.query.q || '';
+    if (q.length < 2) return res.json({ success: true, results: [] });
+    const products = await db.getAllProducts();
+    const results = products
+      .filter(p => p.name.toLowerCase().includes(q.toLowerCase()) || p.part_number.toLowerCase().includes(q.toLowerCase()))
+      .slice(0, 5)
+      .map(p => ({
+        name: p.name,
+        seo_url: p.seo_url,
+        image_path: p.image_path,
+        brand: p.brand_name
+      }));
+    return res.json({ success: true, results });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
 app.get('/api/products', async (req, res) => {
   try {
     const products = await db.getProducts(req.query);
@@ -341,7 +410,11 @@ app.post('/api/enquiries', async (req, res) => {
     const enquiryId = await db.addCartEnquiry({
       business_name, dealer_name, gst, phone, delivery_location, items_summary, remarks
     });
-    return res.json({ success: true, message: 'Enquiry logged successfully.', enquiryId });
+    
+    // Generate PDF Quote/Invoice
+    const pdfUrl = await generateInvoicePDF(req.body, enquiryId);
+
+    return res.json({ success: true, message: 'Enquiry logged successfully.', enquiryId, pdfUrl });
   } catch (err) {
     console.error('Submit enquiry error:', err);
     return res.status(500).json({ success: false, message: 'Failed to log enquiry.' });
@@ -470,6 +543,9 @@ app.post('/api/admin/products', auth, upload.single('image'), async (req, res) =
 
   try {
     const imagePath = req.file ? `/uploads/${req.file.filename}` : '/uploads/placeholder.jpg';
+    if (req.file) {
+      await applyWatermark(imagePath);
+    }
     
     const productId = await db.addProduct({
       name, brand_id, part_number, oem_part_number, alternate_part_number,
@@ -550,6 +626,34 @@ function parseCSV(text) {
   }
   return result;
 }
+
+// GET Generate Master PDF Catalog
+app.get('/api/admin/catalog/pdf', auth, async (req, res) => {
+  try {
+    const products = await db.getAllProducts();
+    const doc = new PDFDocument({ margin: 50 });
+    
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=catalog.pdf');
+    doc.pipe(res);
+    
+    doc.fontSize(24).fillColor('#2d3748').text('Vell Print Technology', { align: 'center' });
+    doc.fontSize(14).fillColor('#718096').text('Master Spares Catalog', { align: 'center' });
+    doc.moveDown(2);
+    
+    products.forEach(p => {
+      doc.fontSize(14).fillColor('#2b6cb0').text(p.name);
+      doc.fontSize(10).fillColor('#4a5568').text(`Part Number: ${p.part_number} | Brand: ${p.brand_name || 'N/A'}`);
+      doc.fontSize(10).fillColor('#718096').text(p.short_description || 'No description');
+      doc.moveDown(1);
+    });
+    
+    doc.end();
+  } catch (err) {
+    console.error('PDF Generation error:', err);
+    res.status(500).json({ success: false, message: 'Failed to generate PDF' });
+  }
+});
 
 // POST Bulk Upload Spares CSV (Protected)
 app.post('/api/admin/products/bulk', auth, upload.single('csvFile'), async (req, res) => {
@@ -817,6 +921,8 @@ app.delete('/api/admin/testimonials/:id', auth, async (req, res) => {
     return res.status(500).json({ success: false, message: 'Failed to delete testimonial.' });
   }
 });
+
+
 
 // Start the server
 startServer();

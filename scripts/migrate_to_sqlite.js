@@ -21,6 +21,7 @@ function migrate() {
   }
 
   const db = new Database(SQLITE_DB_PATH);
+  db.pragma('journal_mode = WAL');
 
   // 1. Create Tables
   db.exec(`
