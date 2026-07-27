@@ -14,11 +14,17 @@ module.exports = {
     const info = db.prepare('INSERT INTO offers (title, description, image_path, discount, start_date, end_date) VALUES (@title, @description, @image_path, @discount, @start_date, @end_date)').run(offer);
     return info.lastInsertRowid;
   },
-  deleteOffer: async (id) => db.prepare('DELETE FROM offers WHERE id = ?').run(id),
+  deleteOffer: async (id) => {
+    const info = db.prepare('DELETE FROM offers WHERE id = ?').run(id);
+    return info.changes > 0;
+  },
   
   getGallery: async () => db.prepare('SELECT * FROM gallery ORDER BY created_at DESC').all(),
   addGalleryItem: async (item) => db.prepare('INSERT INTO gallery (title, image_path) VALUES (@title, @image_path)').run(item).lastInsertRowid,
-  deleteGalleryItem: async (id) => db.prepare('DELETE FROM gallery WHERE id = ?').run(id),
+  deleteGalleryItem: async (id) => {
+    const info = db.prepare('DELETE FROM gallery WHERE id = ?').run(id);
+    return info.changes > 0;
+  },
   
   getBrands: async () => db.prepare('SELECT id, name, logo_path FROM brands ORDER BY name').all(),
   addBrand: async (brand) => db.prepare('INSERT INTO brands (name, logo_path) VALUES (@name, @logo_path)').run(brand).lastInsertRowid,
@@ -96,8 +102,8 @@ module.exports = {
     return info.lastInsertRowid;
   },
   
-  addProductCompatibility: async (productId, brand, model) => {
-    db.prepare('INSERT INTO product_compatibilities (product_id, printer_brand, printer_model) VALUES (?, ?, ?)').run(productId, brand, model);
+  addProductCompatibility: async (productId, compat) => {
+    db.prepare('INSERT INTO product_compatibilities (product_id, printer_brand, printer_model) VALUES (?, ?, ?)').run(productId, compat.printer_brand, compat.printer_model);
   },
   
   deleteProduct: async (id) => db.prepare('DELETE FROM products WHERE id = ?').run(id),
@@ -105,12 +111,14 @@ module.exports = {
   getDealerRegistrations: async () => db.prepare('SELECT * FROM dealer_registrations ORDER BY id DESC').all(),
   addDealerRegistration: async (data) => db.prepare('INSERT INTO dealer_registrations (business_name, dealer_name, gst, pan, address, phone, email, city, state, pincode, business_type) VALUES (@business_name, @dealer_name, @gst, @pan, @address, @phone, @email, @city, @state, @pincode, @business_type)').run(data).lastInsertRowid,
   updateDealerStatus: async (id, status) => db.prepare('UPDATE dealer_registrations SET status = ? WHERE id = ?').run(status, id),
+  updateDealerRegistrationStatus: async (id, status) => db.prepare('UPDATE dealer_registrations SET status = ? WHERE id = ?').run(status, id),
   
   getCartEnquiries: async () => db.prepare('SELECT * FROM cart_enquiries ORDER BY id DESC').all(),
   addCartEnquiry: async (data) => db.prepare('INSERT INTO cart_enquiries (business_name, dealer_name, gst, phone, delivery_location, items_summary, remarks) VALUES (@business_name, @dealer_name, @gst, @phone, @delivery_location, @items_summary, @remarks)').run(data).lastInsertRowid,
   
   getCallbacks: async () => db.prepare('SELECT * FROM callbacks ORDER BY created_at DESC').all(),
-  addCallback: async (cb) => db.prepare('INSERT INTO callbacks (name, phone) VALUES (@name, @phone)').run(cb).lastInsertRowid,
+  addCallback: async (cb) => db.prepare('INSERT INTO callbacks (name, phone, email, message) VALUES (@name, @phone, @email, @message)').run(cb).lastInsertRowid,
+  getAllProducts: async () => db.prepare('SELECT p.*, b.name as brand_name FROM products p LEFT JOIN brands b ON p.brand_id = b.id ORDER BY p.name').all(),
   
   getServiceTickets: async () => db.prepare('SELECT * FROM service_tickets ORDER BY created_at DESC').all(),
   addServiceTicket: async (t) => {

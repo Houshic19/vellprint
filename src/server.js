@@ -356,7 +356,6 @@ app.get('/api/store/metadata', async (req, res) => {
   }
 });
 
-// GET Product Catalog List
 // Autocomplete API
 app.get('/api/search/autocomplete', async (req, res) => {
   try {
@@ -484,6 +483,10 @@ app.get('/api/admin/dealers', auth, async (req, res) => {
 app.put('/api/admin/dealers/:id/status', auth, async (req, res) => {
   const { id } = req.params;
   const { status } = req.body; // 'APPROVED' or 'REJECTED'
+  const validStatuses = ['PENDING', 'APPROVED', 'REJECTED'];
+  if (!status || !validStatuses.includes(status)) {
+    return res.status(400).json({ success: false, message: `Invalid status. Must be one of: ${validStatuses.join(', ')}` });
+  }
   try {
     await db.updateDealerRegistrationStatus(id, status);
     return res.json({ success: true, message: `Dealer status changed to ${status}.` });
@@ -719,13 +722,15 @@ app.post('/api/admin/products/bulk', auth, upload.single('csvFile'), async (req,
       successCount++;
     }
     
-    // Remove temporary CSV file
-    fs.unlinkSync(csvPath);
-    
+    // Remove temporary CSV file in finally so it always cleans up
     return res.json({ success: true, message: `Successfully imported ${successCount} products from CSV.` });
   } catch (err) {
     console.error('CSV import API error:', err);
     return res.status(500).json({ success: false, message: 'Failed to process CSV file.' });
+  } finally {
+    if (req.file && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
   }
 });
 // ============================================================

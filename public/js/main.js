@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 2. Fixed Header Scroll Styling
   const header = document.querySelector('header');
   window.addEventListener('scroll', () => {
+    if (!header) return;
     if (window.scrollY > 50) {
       header.classList.add('scrolled');
     } else {
@@ -49,8 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const offersContainer = document.getElementById('offers-container');
 
   async function fetchOffers() {
+    if (!offersContainer) return; // guard: element may not exist on all pages
     try {
       const response = await fetch(window.API_BASE_URL + '/api/offers');
+      if (!response.ok) throw new Error('API error');
       const data = await response.json();
 
       if (data.success && data.offers.length > 0) {
@@ -107,8 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const galleryContainer = document.getElementById('gallery-container');
 
   async function fetchGallery() {
+    if (!galleryContainer) return; // guard: element may not exist on all pages
     try {
       const response = await fetch(window.API_BASE_URL + '/api/gallery');
+      if (!response.ok) throw new Error('API error');
       const data = await response.json();
 
       if (data.success && data.items.length > 0) {
@@ -282,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // If valid, disable submit button to prevent double-posts
+      // Disable submit button to prevent double-posts
       const submitBtn = document.getElementById('contactSubmitBtn');
       if (submitBtn) {
         submitBtn.disabled = true;
@@ -294,17 +299,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = {};
       formData.forEach((value, key) => data[key] = value);
 
-      // Perform AJAX post simulation
-      setTimeout(() => {
+      // POST to callback API
+      try {
+        const res = await fetch(window.API_BASE_URL + '/api/callbacks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: data.name || data.fullName || '', phone: data.phone || '', email: data.email || '', message: data.message || '' })
+        });
+        await res.json();
+      } catch(e) {
+        console.error('Contact form error:', e);
+      } finally {
         alert('Thank you! Your inquiry has been sent. A Vell Print representative will contact you shortly.');
         form.reset();
-        
-        // Re-enable submit button
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Request a Quote';
         }
-      }, 1500);
+      }
     });
   }
 
@@ -442,10 +454,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 5000);
     }
 
-    // Trigger every 30-45 seconds
-    setInterval(() => {
-      showToast();
-    }, 30000 + Math.random() * 15000);
+    // Trigger with randomized interval (re-randomize after each fire)
+    function scheduleNextToast() {
+      setTimeout(() => {
+        showToast();
+        scheduleNextToast();
+      }, 30000 + Math.random() * 15000);
+    }
+    scheduleNextToast();
   })();
 
   // ============================================================

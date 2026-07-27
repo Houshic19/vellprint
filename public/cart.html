@@ -290,6 +290,11 @@
 
         if (cart.length === 0) return;
 
+        // Prevent double-submit
+        const submitBtn = checkoutForm.querySelector('button[type="submit"]');
+        const oldBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...'; }
+
         // Compile items list string
         const itemsList = cart.map((item, idx) => {
           return `${idx + 1}. ${item.name} (Part: ${item.part_number || 'N/A'}) - Qty: ${item.qty} ${item.unit}`;
@@ -346,6 +351,9 @@
         } catch (err) {
           console.error('Checkout error:', err);
           alert('Failed to connect to servers.');
+        } finally {
+          // Always re-enable submit button
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = oldBtnHtml; }
         }
       });
 
