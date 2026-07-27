@@ -543,10 +543,7 @@ app.post('/api/admin/products', auth, upload.single('image'), async (req, res) =
 
   try {
     const imagePath = req.file ? `/uploads/${req.file.filename}` : '/uploads/placeholder.jpg';
-    if (req.file) {
-      await applyWatermark(imagePath);
-    }
-    
+
     const productId = await db.addProduct({
       name, brand_id, part_number, oem_part_number, alternate_part_number,
       hsn_code, sku, category_id, short_description, long_description,
@@ -569,7 +566,16 @@ app.post('/api/admin/products', auth, upload.single('image'), async (req, res) =
       }
     }
 
-    return res.json({ success: true, message: 'Product added successfully.', productId });
+    // Respond immediately — don't block on watermarking
+    res.json({ success: true, message: 'Product added successfully.', productId });
+
+    // Apply watermark in background AFTER responding
+    if (req.file) {
+      applyWatermark(imagePath).catch(err => {
+        console.error('Background watermark error:', err);
+      });
+    }
+
   } catch (err) {
     console.error('Add product error:', err);
     return res.status(500).json({ success: false, message: 'Failed to add product.' });
