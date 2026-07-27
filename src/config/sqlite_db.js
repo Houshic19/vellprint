@@ -107,6 +107,26 @@ module.exports = {
   },
   
   deleteProduct: async (id) => db.prepare('DELETE FROM products WHERE id = ?').run(id),
+
+  updateProduct: async (id, fields) => {
+    const editableCols = ['name', 'brand_id', 'part_number', 'oem_part_number', 'alternate_part_number',
+      'hsn_code', 'sku', 'category_id', 'short_description', 'long_description', 'tech_specifications',
+      'warranty', 'moq', 'unit', 'weight', 'availability', 'stock_status', 'image_path',
+      'is_featured', 'is_popular', 'is_new_arrival', 'meta_title', 'meta_description', 'seo_url'];
+    const safeFields = {};
+    editableCols.forEach(c => { if (fields[c] !== undefined) safeFields[c] = fields[c]; });
+    const setClauses = Object.keys(safeFields).map(c => `${c} = @${c}`).join(', ');
+    safeFields.id = id;
+    db.prepare(`UPDATE products SET ${setClauses} WHERE id = @id`).run(safeFields);
+  },
+
+  updateProductStock: async (id, availability) => {
+    db.prepare('UPDATE products SET availability = ?, stock_status = ? WHERE id = ?').run(
+      availability,
+      availability === 'In Stock' ? 'Available' : availability === 'Out of Stock' ? 'Out of Stock' : 'Pre-Order',
+      id
+    );
+  },
   
   getDealerRegistrations: async () => db.prepare('SELECT * FROM dealer_registrations ORDER BY id DESC').all(),
   addDealerRegistration: async (data) => db.prepare('INSERT INTO dealer_registrations (business_name, dealer_name, gst, pan, address, phone, email, city, state, pincode, business_type) VALUES (@business_name, @dealer_name, @gst, @pan, @address, @phone, @email, @city, @state, @pincode, @business_type)').run(data).lastInsertRowid,
@@ -118,6 +138,7 @@ module.exports = {
   
   getCallbacks: async () => db.prepare('SELECT * FROM callbacks ORDER BY created_at DESC').all(),
   addCallback: async (cb) => db.prepare('INSERT INTO callbacks (name, phone, email, message) VALUES (@name, @phone, @email, @message)').run(cb).lastInsertRowid,
+  updateCallbackStatus: async (id, status) => db.prepare('UPDATE callbacks SET status = ? WHERE id = ?').run(status, id),
   getAllProducts: async () => db.prepare('SELECT p.*, b.name as brand_name FROM products p LEFT JOIN brands b ON p.brand_id = b.id ORDER BY p.name').all(),
   
   getServiceTickets: async () => db.prepare('SELECT * FROM service_tickets ORDER BY created_at DESC').all(),
@@ -153,5 +174,9 @@ module.exports = {
     const recentEnquiries = db.prepare('SELECT date(created_at) as date, COUNT(*) as count FROM cart_enquiries GROUP BY date(created_at) ORDER BY date(created_at) DESC LIMIT 7').all();
     
     return { totalProducts, totalDealers, totalEnquiries, totalBrands, recentEnquiries };
+  },
+
+  updateAdminPassword: async (username, newHash) => {
+    db.prepare('UPDATE admin_users SET password_hash = ? WHERE username = ?').run(newHash, username);
   }
 };

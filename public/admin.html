@@ -115,6 +115,7 @@
           <button class="admin-nav-btn" data-tab="tab-tickets"><i class="fa-solid fa-ticket"></i> Tickets</button>
           <button class="admin-nav-btn" data-tab="tab-blog"><i class="fa-solid fa-newspaper"></i> Blog Posts</button>
           <button class="admin-nav-btn" data-tab="tab-testimonials"><i class="fa-solid fa-star"></i> Testimonials</button>
+          <button class="admin-nav-btn" data-tab="tab-settings"><i class="fa-solid fa-gear"></i> Settings</button>
         </div>
       </div>
 
@@ -317,7 +318,10 @@
 
           <!-- Existing Catalog Spares List -->
           <div>
-            <h3 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-warehouse"></i> Catalog Inventory</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+              <h3 style="margin:0;"><i class="fa-solid fa-warehouse"></i> Catalog Inventory</h3>
+              <input type="text" id="admin-product-search" placeholder="Search by name, part no, or SKU..." style="padding:0.4rem 0.8rem; border:1px solid var(--theme-border); border-radius:var(--border-radius-md); background:var(--theme-bg); color:var(--theme-text); font-size:0.85rem; width:100%; max-width:250px;">
+            </div>
             <div id="admin-products-list" class="admin-grid">
               <!-- Dynamically populated -->
             </div>
@@ -339,9 +343,12 @@
 
       <!-- Tab E: Manage Cart Enquiries -->
       <div id="tab-enquiries" class="admin-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-          <h3 style="margin:0;"><i class="fa-solid fa-receipt"></i> B2B Cart Enquiries Logs</h3>
-          <button class="cta-btn" onclick="exportEnquiriesCSV()" style="font-size:0.8rem; padding:0.5rem 1rem;"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+          <div style="display:flex; align-items:center; gap:1rem;">
+            <h3 style="margin:0;"><i class="fa-solid fa-receipt"></i> B2B Cart Enquiries Logs</h3>
+            <button class="cta-btn" onclick="exportEnquiriesCSV()" style="font-size:0.8rem; padding:0.4rem 0.8rem; box-shadow:none;"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+          </div>
+          <input type="text" id="enquiry-search" placeholder="Search by name, business or phone..." style="padding:0.4rem 0.8rem; border:1px solid var(--theme-border); border-radius:var(--border-radius-md); background:var(--theme-bg); color:var(--theme-text); font-size:0.85rem; width:100%; max-width:280px;">
         </div>
         <div id="admin-enquiries-list" style="display:flex; flex-direction:column; gap:1.5rem;">
           <!-- Dynamically populated -->
@@ -456,6 +463,61 @@
       </div>
 
     </section>
+
+  </div>
+
+  <!-- Edit Product Modal -->
+  <div id="edit-product-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:flex-start; justify-content:center; overflow-y:auto; padding:2rem 0;">
+    <div style="background:var(--theme-card); border-radius:12px; max-width:700px; width:95%; padding:2rem; position:relative; margin:auto;">
+      <button id="close-edit-modal" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--theme-text);">&times;</button>
+      <h3 class="gradient-text" style="margin-bottom:1.5rem;"><i class="fa-solid fa-pen-to-square"></i> Edit Product</h3>
+      <form id="editProductForm" enctype="multipart/form-data" novalidate>
+        <input type="hidden" id="editProdId">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+          <div class="form-group"><label>Product Name *</label><input type="text" id="editProdName" name="name" required></div>
+          <div class="form-group"><label>SEO URL *</label><input type="text" id="editProdSeoUrl" name="seo_url" required></div>
+          <div class="form-group"><label>Part Number</label><input type="text" id="editProdPart" name="part_number"></div>
+          <div class="form-group"><label>SKU</label><input type="text" id="editProdSku" name="sku"></div>
+          <div class="form-group"><label>Availability</label><select id="editProdAvailability" name="availability"><option value="In Stock">In Stock</option><option value="Out of Stock">Out of Stock</option><option value="Pre-Order">Pre-Order</option></select></div>
+          <div class="form-group"><label>Stock Status</label><select id="editProdStockStatus" name="stock_status"><option value="Available">Available</option><option value="Out of Stock">Out of Stock</option><option value="Pre-Order">Pre-Order</option></select></div>
+        </div>
+        <div class="form-group"><label>Short Description</label><textarea id="editProdDesc" name="short_description" style="min-height:80px;"></textarea></div>
+        <div class="form-group"><label>Replace Image (optional)</label><input type="file" name="image" accept="image/*" style="padding:0.5rem;"></div>
+        <div style="display:flex; gap:1rem; margin-top:1rem;">
+          <button type="submit" class="cta-btn" id="editProdSubmitBtn" style="flex:1;"><i class="fa-solid fa-save"></i> Save Changes</button>
+          <button type="button" id="cancel-edit-modal" class="cta-btn" style="background:var(--theme-text-muted); flex:0.4;">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings Tab Panel (injected inline) -->
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const dashSec = document.getElementById('dashboard-section');
+    if (dashSec) {
+      const settingsPanel = document.createElement('div');
+      settingsPanel.id = 'tab-settings';
+      settingsPanel.className = 'admin-panel';
+      settingsPanel.innerHTML = `
+        <h2 class="gradient-text" style="margin-bottom:2rem;"><i class="fa-solid fa-gear"></i> Admin Settings</h2>
+        <div style="max-width:480px;">
+          <div style="background:var(--theme-card); border:1px solid var(--theme-border); border-radius:var(--border-radius-md); padding:2rem; box-shadow:0 4px 15px var(--theme-shadow);">
+            <h3 style="margin-bottom:1.5rem;"><i class="fa-solid fa-key"></i> Change Password</h3>
+            <div id="change-pw-alert" style="display:none; padding:0.75rem; border-radius:6px; margin-bottom:1rem; font-size:0.9rem;"></div>
+            <form id="changePwForm" novalidate>
+              <div class="form-group"><label>Current Password</label><input type="password" id="currentPw" required></div>
+              <div class="form-group"><label>New Password (min 8 characters)</label><input type="password" id="newPw" required minlength="8"></div>
+              <div class="form-group"><label>Confirm New Password</label><input type="password" id="confirmPw" required></div>
+              <button type="submit" class="cta-btn" id="changePwBtn" style="width:100%;"><i class="fa-solid fa-lock"></i> Update Password</button>
+            </form>
+          </div>
+        </div>
+      `;
+      dashSec.appendChild(settingsPanel);
+    }
+  });
+  </script>
 
   </div>
 

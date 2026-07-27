@@ -596,6 +596,93 @@ app.delete('/api/admin/products/:id', auth, async (req, res) => {
   }
 });
 
+// PUT Edit/Update Product (Protected)
+app.put('/api/admin/products/:id', auth, upload.single('image'), async (req, res) => {
+  const { id } = req.params;
+  const {
+    name, brand_id, part_number, oem_part_number, alternate_part_number,
+    hsn_code, sku, category_id, short_description, long_description,
+    tech_specifications, warranty, moq, unit, weight, availability,
+    stock_status, is_featured, is_popular, is_new_arrival, meta_title,
+    meta_description, seo_url
+  } = req.body;
+
+  if (!name || !seo_url) {
+    return res.status(400).json({ success: false, message: 'Product name and SEO URL are required.' });
+  }
+  try {
+    const fields = {
+      name, brand_id, part_number, oem_part_number, alternate_part_number,
+      hsn_code, sku, category_id, short_description, long_description,
+      tech_specifications, warranty, moq, unit, weight, availability,
+      stock_status, is_featured, is_popular, is_new_arrival, meta_title,
+      meta_description, seo_url
+    };
+    if (req.file) {
+      fields.image_path = `/uploads/${req.file.filename}`;
+      // Watermark in background
+      applyWatermark(fields.image_path).catch(err => console.error('Watermark error:', err));
+    }
+    await db.updateProduct(id, fields);
+    return res.json({ success: true, message: 'Product updated successfully.' });
+  } catch (err) {
+    console.error('Update product error:', err);
+    return res.status(500).json({ success: false, message: 'Failed to update product.' });
+  }
+});
+
+// PATCH Product Stock Status Toggle (Protected)
+app.patch('/api/admin/products/:id/stock', auth, async (req, res) => {
+  const { id } = req.params;
+  const { availability } = req.body;
+  const validStatuses = ['In Stock', 'Out of Stock', 'Pre-Order'];
+  if (!validStatuses.includes(availability)) {
+    return res.status(400).json({ success: false, message: 'Invalid availability value.' });
+  }
+  try {
+    await db.updateProductStock(id, availability);
+    return res.json({ success: true, message: `Product marked as "${availability}".` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Failed to update stock status.' });
+  }
+});
+
+// PATCH Callback status (mark as Called/Pending)
+app.patch('/api/admin/callbacks/:id/status', auth, async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  const validStatuses = ['Pending', 'Called', 'Not Reachable'];
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ success: false, message: 'Invalid callback status.' });
+  }
+  try {
+    await db.updateCallbackStatus(id, status);
+    return res.json({ success: true, message: `Callback marked as "${status}".` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Failed to update callback status.' });
+  }
+});
+
+// POST Admin Change Password (Protected)
+app.post('/api/admin/change-password', auth, async (req, res) => {
+  const { current_password, new_password } = req.body;
+  if (!current_password || !new_password || new_password.length < 8) {
+    return res.status(400).json({ success: false, message: 'Current password and a new password (min 8 chars) are required.' });
+  }
+  try {
+    const admin = await db.getAdminUser(req.user.username);
+    if (!admin) return res.status(404).json({ success: false, message: 'Admin not found.' });
+    const isMatch = await bcrypt.compare(current_password, admin.password_hash);
+    if (!isMatch) return res.status(401).json({ success: false, message: 'Current password is incorrect.' });
+    const newHash = await bcrypt.hash(new_password, 12);
+    await db.updateAdminPassword(req.user.username, newHash);
+    return res.json({ success: true, message: 'Password changed successfully.' });
+  } catch (err) {
+    console.error('Change password error:', err);
+    return res.status(500).json({ success: false, message: 'Failed to change password.' });
+  }
+});
+
 
 
 // Vanilla CSV Parser Helper (Handles quotes and commas)

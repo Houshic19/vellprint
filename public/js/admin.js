@@ -628,23 +628,59 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Products
-  async function loadAdminProducts() {
+  async function loadAdminProducts(searchQuery = '') {
     if (!adminProductsList) return;
     try {
-      const res = await fetch(window.API_BASE_URL + '/api/products');
+      const url = searchQuery
+        ? `${window.API_BASE_URL}/api/products?search=${encodeURIComponent(searchQuery)}`
+        : `${window.API_BASE_URL}/api/products`;
+      const res = await fetch(url);
       const data = await res.json();
       if (data.success && data.products.length > 0) {
         adminProductsList.innerHTML = '';
         data.products.forEach(p => {
           const div = document.createElement('div');
           div.className = 'admin-list-item';
+          div.style.cssText = 'flex-wrap:wrap; gap:0.75rem;';
+
+          const isInStock = p.availability === 'In Stock';
+          const stockBadge = `<span style="padding:0.25rem 0.6rem; border-radius:999px; font-size:0.7rem; font-weight:700; color:white; background:${isInStock ? 'hsl(120,60%,40%)' : 'hsl(0,70%,50%)'};">${p.availability || 'Unknown'}</span>`;
+
           div.innerHTML = `
-            <div class="admin-list-details">
-              <h4>${p.name}</h4>
-              <p>${p.brand_name} | Part: ${p.part_number || 'N/A'} | SKU: ${p.sku || 'N/A'}</p>
+            <div class="admin-list-details" style="flex:1; min-width:200px;">
+              <h4>${p.name} ${stockBadge}</h4>
+              <p>${p.brand_name || 'N/A'} | Part: ${p.part_number || 'N/A'} | SKU: ${p.sku || 'N/A'}</p>
             </div>
-            <button class="delete-btn" data-id="${p.id}"><i class="fa-regular fa-trash-can"></i> Delete</button>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+              <button class="cta-btn edit-prod-btn" data-id="${p.id}" style="padding:0.4rem 0.8rem; font-size:0.75rem; background:hsl(220,80%,50%); box-shadow:none;">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+              <button class="cta-btn toggle-stock-btn" data-id="${p.id}" data-current="${p.availability}" style="padding:0.4rem 0.8rem; font-size:0.75rem; background:${isInStock ? 'hsl(0,70%,50%)' : 'hsl(120,60%,40%)'}; box-shadow:none;">
+                <i class="fa-solid fa-toggle-${isInStock ? 'off' : 'on'}"></i> ${isInStock ? 'Mark Out' : 'Mark In Stock'}
+              </button>
+              <button class="delete-btn" data-id="${p.id}"><i class="fa-regular fa-trash-can"></i> Delete</button>
+            </div>
           `;
+
+          div.querySelector('.edit-prod-btn').addEventListener('click', () => openEditProductModal(p));
+
+          div.querySelector('.toggle-stock-btn').addEventListener('click', async (e) => {
+            const btn = e.currentTarget;
+            const newStatus = btn.getAttribute('data-current') === 'In Stock' ? 'Out of Stock' : 'In Stock';
+            btn.disabled = true;
+            try {
+              const res = await fetch(`${window.API_BASE_URL}/api/admin/products/${p.id}/stock`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ availability: newStatus })
+              });
+              const d = await res.json();
+              if (d.success) loadAdminProducts(searchQuery);
+              else alert(d.message || 'Failed to toggle stock.');
+            } catch { alert('Network error.'); }
+            finally { btn.disabled = false; }
+          });
 
           div.querySelector('.delete-btn').addEventListener('click', async () => {
             if (confirm(`Delete product "${p.name}"?`)) {
@@ -838,25 +874,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Enquiries
-  async function loadAdminEnquiries() {
+  // Enquiries — with search and WhatsApp reply
+  async function loadAdminEnquiries(searchQuery = '') {
     if (!adminEnquiriesList) return;
     try {
-      const res = await fetch(window.API_BASE_URL + '/api/admin/enquiries', {
-        credentials: 'include'
-      });
+      const res = await fetch(window.API_BASE_URL + '/api/admin/enquiries', { credentials: 'include' });
       const data = await res.json();
       if (data.success && data.enquiries.length > 0) {
+        let enquiries = data.enquiries;
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          enquiries = enquiries.filter(e =>
+            (e.business_name || '').toLowerCase().includes(q) ||
+            (e.dealer_name || '').toLowerCase().includes(q) ||
+            (e.phone || '').toLowerCase().includes(q)
+          );
+        }
         adminEnquiriesList.innerHTML = '';
-        data.enquiries.forEach(e => {
+        if (enquiries.length === 0) {
+          adminEnquiriesList.innerHTML = '<p style="color:var(--text-muted);">No enquiries match your search.</p>';
+          return;
+        }
+        enquiries.forEach(e => {
           const card = document.createElement('div');
-          card.style.background = 'var(--theme-card)';
-          card.style.border = '1px solid var(--theme-border)';
-          card.style.padding = '1.5rem';
-          card.style.borderRadius = 'var(--border-radius-md)';
-          card.style.lineHeight = '1.6';
-          card.style.fontSize = '0.9rem';
-
+          card.style.cssText = 'background:var(--theme-card); border:1px solid var(--theme-border); padding:1.5rem; border-radius:var(--border-radius-md); line-height:1.6; font-size:0.9rem;';
+          const waText = `Hi ${e.dealer_name}, thank you for your enquiry (Ref #${e.id}) at Vell Print Technology. Items requested: ${e.items_summary}. We will get back to you with pricing shortly.`;
+          const waUrl = `https://wa.me/91${e.phone}?text=${encodeURIComponent(waText)}`;
           card.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; border-bottom:1px solid var(--theme-border); padding-bottom:0.75rem; margin-bottom:0.75rem;">
               <h4 style="font-size:1.1rem; color:var(--theme-text);">${e.business_name}</h4>
@@ -866,7 +909,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Delivery Target:</strong> ${e.delivery_location}</p>
             <p style="background:var(--theme-bg); padding:0.75rem; border-radius:4px; border:1px solid var(--theme-border); margin:0.5rem 0;"><strong>Requested Items:</strong> ${e.items_summary}</p>
             <p><strong>Remarks:</strong> <em>${e.remarks || 'None'}</em></p>
-            <div style="margin-top: 1rem; border-top: 1px solid var(--theme-border); padding-top: 1rem; text-align: right;">
+            <div style="margin-top:1rem; border-top:1px solid var(--theme-border); padding-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
+              <a href="${waUrl}" target="_blank" class="cta-btn" style="padding:0.5rem 1rem; font-size:0.8rem; background:#25D366; box-shadow:none;"><i class="fa-brands fa-whatsapp"></i> Reply on WhatsApp</a>
               <a href="/quote.html?id=${e.id}" target="_blank" class="admin-cta-btn" style="display:inline-block; padding:0.5rem 1rem; font-size:0.8rem;"><i class="fa-solid fa-file-invoice"></i> Generate Quote</a>
             </div>
           `;
@@ -881,25 +925,35 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // CALLBACK REQUESTS ADMIN
+  // CALLBACK REQUESTS ADMIN — with status tracking
   // ============================================================
   async function loadAdminCallbacks() {
     const listEl = document.getElementById('admin-callbacks-list');
     if (!listEl) return;
     try {
-      const res = await fetch(window.API_BASE_URL + '/api/admin/callbacks', {
-        credentials: 'include'
-      });
+      const res = await fetch(window.API_BASE_URL + '/api/admin/callbacks', { credentials: 'include' });
       const data = await res.json();
       if (data.success && data.callbacks.length > 0) {
         listEl.innerHTML = data.callbacks.map(cb => {
           const dt = new Date(cb.created_at).toLocaleString('en-IN');
+          const statusColors = { 'Pending': 'hsl(40,90%,45%)', 'Called': 'hsl(120,60%,35%)', 'Not Reachable': 'hsl(0,70%,50%)' };
+          const statusColor = statusColors[cb.status] || 'hsl(40,90%,45%)';
           return `<div class="service-card" style="padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
             <div>
               <strong style="font-size:1rem;"><i class="fa-solid fa-user"></i> ${cb.name}</strong>
               <p style="font-size:0.85rem; color:var(--theme-text-muted); margin-top:0.25rem;"><i class="fa-solid fa-phone"></i> <a href="tel:${cb.phone}" style="color:var(--color-primary); font-weight:700;">${cb.phone}</a></p>
+              ${cb.email ? `<p style="font-size:0.8rem; color:var(--theme-text-muted);">${cb.email}</p>` : ''}
+              ${cb.message ? `<p style="font-size:0.8rem; font-style:italic; color:var(--theme-text-muted);">"${cb.message}"</p>` : ''}
             </div>
-            <span style="font-size:0.75rem; color:var(--theme-text-muted);"><i class="fa-solid fa-clock"></i> ${dt}</span>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;">
+              <span style="padding:0.3rem 0.75rem; border-radius:999px; font-size:0.7rem; font-weight:700; color:white; background:${statusColor};">${cb.status || 'Pending'}</span>
+              <div style="display:flex; gap:0.4rem; flex-wrap:wrap; justify-content:flex-end;">
+                <button onclick="updateCallbackStatus(${cb.id}, 'Called')" class="cta-btn" style="padding:0.3rem 0.6rem; font-size:0.7rem; background:hsl(120,60%,35%); box-shadow:none;"><i class="fa-solid fa-phone-volume"></i> Called</button>
+                <button onclick="updateCallbackStatus(${cb.id}, 'Not Reachable')" class="cta-btn" style="padding:0.3rem 0.6rem; font-size:0.7rem; background:hsl(0,70%,50%); box-shadow:none;"><i class="fa-solid fa-phone-slash"></i> No Answer</button>
+                <a href="https://wa.me/91${cb.phone}?text=${encodeURIComponent('Hi ' + cb.name + ', this is Vell Print Technology calling back as requested. How can we help you?')}" target="_blank" class="cta-btn" style="padding:0.3rem 0.6rem; font-size:0.7rem; background:#25D366; box-shadow:none;"><i class="fa-brands fa-whatsapp"></i></a>
+              </div>
+              <span style="font-size:0.75rem; color:var(--theme-text-muted);"><i class="fa-solid fa-clock"></i> ${dt}</span>
+            </div>
           </div>`;
         }).join('');
       } else {
@@ -1199,5 +1253,152 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // ============================================================
+  // EDIT PRODUCT MODAL
+  // ============================================================
+  function openEditProductModal(p) {
+    const modal = document.getElementById('edit-product-modal');
+    if (!modal) return;
+    document.getElementById('editProdId').value = p.id;
+    document.getElementById('editProdName').value = p.name || '';
+    document.getElementById('editProdSeoUrl').value = p.seo_url || '';
+    document.getElementById('editProdPart').value = p.part_number || '';
+    document.getElementById('editProdSku').value = p.sku || '';
+    document.getElementById('editProdDesc').value = p.short_description || '';
+    document.getElementById('editProdAvailability').value = p.availability || 'In Stock';
+    document.getElementById('editProdStockStatus').value = p.stock_status || 'Available';
+    modal.style.display = 'flex';
+  }
+
+  const editModal = document.getElementById('edit-product-modal');
+  const closeEditBtn = document.getElementById('close-edit-modal');
+  const cancelEditBtn = document.getElementById('cancel-edit-modal');
+  const editProductForm = document.getElementById('editProductForm');
+
+  if (closeEditBtn) closeEditBtn.addEventListener('click', () => { if (editModal) editModal.style.display = 'none'; });
+  if (cancelEditBtn) cancelEditBtn.addEventListener('click', () => { if (editModal) editModal.style.display = 'none'; });
+  if (editModal) editModal.addEventListener('click', (e) => { if (e.target === editModal) editModal.style.display = 'none'; });
+
+  if (editProductForm) {
+    editProductForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editProdId').value;
+      const submitBtn = document.getElementById('editProdSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      const formData = new FormData(editProductForm);
+      try {
+        const res = await fetch(`${window.API_BASE_URL}/api/admin/products/${id}`, {
+          method: 'PUT',
+          credentials: 'include',
+          body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+          if (editModal) editModal.style.display = 'none';
+          loadAdminProducts();
+          alert('Product updated successfully!');
+        } else {
+          alert(data.message || 'Failed to update product.');
+        }
+      } catch (err) {
+        alert('Network error updating product.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes';
+      }
+    });
+  }
+
+  // ============================================================
+  // UPDATE CALLBACK STATUS (global function for inline onclick)
+  // ============================================================
+  window.updateCallbackStatus = async function(id, status) {
+    try {
+      const res = await fetch(`${window.API_BASE_URL}/api/admin/callbacks/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ status })
+      });
+      const data = await res.json();
+      if (data.success) { loadAdminCallbacks(); }
+      else { alert(data.message || 'Failed to update callback status.'); }
+    } catch { alert('Network error.'); }
+  };
+
+  // ============================================================
+  // ENQUIRY SEARCH BAR
+  // ============================================================
+  const enquirySearchInput = document.getElementById('enquiry-search');
+  if (enquirySearchInput) {
+    let debounceTimer;
+    enquirySearchInput.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => loadAdminEnquiries(enquirySearchInput.value.trim()), 300);
+    });
+  }
+
+  // ============================================================
+  // PRODUCT SEARCH BAR
+  // ============================================================
+  const productSearchInput = document.getElementById('admin-product-search');
+  if (productSearchInput) {
+    let debounceTimer;
+    productSearchInput.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => loadAdminProducts(productSearchInput.value.trim()), 300);
+    });
+  }
+
+  // ============================================================
+  // CHANGE PASSWORD FORM (Settings Tab)
+  // ============================================================
+  document.addEventListener('click', (e) => {
+    const changePwForm = document.getElementById('changePwForm');
+    if (changePwForm && !changePwForm._bound) {
+      changePwForm._bound = true;
+      changePwForm.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        const current_password = document.getElementById('currentPw').value;
+        const new_password = document.getElementById('newPw').value;
+        const confirm_password = document.getElementById('confirmPw').value;
+        const alertEl = document.getElementById('change-pw-alert');
+        const btn = document.getElementById('changePwBtn');
+
+        if (new_password !== confirm_password) {
+          alertEl.textContent = 'New passwords do not match.';
+          alertEl.style.cssText = 'display:block; background:rgba(255,0,0,0.1); color:hsl(0,70%,50%); padding:0.75rem; border-radius:6px; margin-bottom:1rem;';
+          return;
+        }
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating...';
+        try {
+          const res = await fetch(window.API_BASE_URL + '/api/admin/change-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ current_password, new_password })
+          });
+          const data = await res.json();
+          if (data.success) {
+            alertEl.textContent = '✅ ' + data.message;
+            alertEl.style.cssText = 'display:block; background:rgba(0,200,0,0.1); color:hsl(120,60%,35%); padding:0.75rem; border-radius:6px; margin-bottom:1rem;';
+            changePwForm.reset();
+          } else {
+            alertEl.textContent = '❌ ' + (data.message || 'Failed to change password.');
+            alertEl.style.cssText = 'display:block; background:rgba(255,0,0,0.1); color:hsl(0,70%,50%); padding:0.75rem; border-radius:6px; margin-bottom:1rem;';
+          }
+        } catch {
+          alertEl.textContent = '❌ Network error. Please try again.';
+          alertEl.style.cssText = 'display:block; background:rgba(255,0,0,0.1); color:hsl(0,70%,50%); padding:0.75rem; border-radius:6px; margin-bottom:1rem;';
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-lock"></i> Update Password';
+        }
+      });
+    }
+  }, { once: false });
 
 });
