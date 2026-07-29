@@ -1,4 +1,23 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // --- FETCH INTERCEPTOR FOR BEARER TOKEN ---
+  const originalFetch = window.fetch;
+  window.fetch = async function() {
+    let [resource, config] = arguments;
+    if (!config) config = {};
+    if (!config.headers) config.headers = {};
+    
+    const token = localStorage.getItem('vell_admin_token');
+    if (token) {
+      if (config.headers instanceof Headers) {
+        config.headers.set('Authorization', 'Bearer ' + token);
+      } else {
+        config.headers['Authorization'] = 'Bearer ' + token;
+      }
+    }
+    return originalFetch.apply(this, arguments);
+  };
+  // ------------------------------------------
+
   const loginSection = document.getElementById('login-section');
   const dashboardSection = document.getElementById('dashboard-section');
   const logoutWrapper = document.getElementById('logout-wrapper');
@@ -131,6 +150,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (data.success) {
           localStorage.setItem('vell_admin_user', data.username);
+          if (data.token) {
+            localStorage.setItem('vell_admin_token', data.token);
+          }
           showDashboard();
           loginForm.reset();
         } else {
@@ -160,6 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await fetch(window.API_BASE_URL + '/api/admin/logout', { method: 'POST', credentials: 'include' });
       } catch(e) {}
       localStorage.removeItem('vell_admin_user');
+      localStorage.removeItem('vell_admin_token');
       location.reload();
     });
   }
