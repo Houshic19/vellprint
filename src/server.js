@@ -540,6 +540,15 @@ app.post('/api/admin/categories', auth, async (req, res) => {
     const categoryId = await db.addCategory({ name, parent_id: parent_id || null, brand_id: brand_id || null, seo_url });
     return res.json({ success: true, message: 'Category added successfully.', categoryId });
   } catch (err) {
+    if (err.message && err.message.includes('UNIQUE')) {
+      try {
+        const uniqueSeoUrl = seo_url + '-' + Math.floor(Math.random() * 10000);
+        const categoryId = await db.addCategory({ name, parent_id: parent_id || null, brand_id: brand_id || null, seo_url: uniqueSeoUrl });
+        return res.json({ success: true, message: 'Category added successfully.', categoryId });
+      } catch (e) {
+        return res.status(500).json({ success: false, message: 'Failed to add category (duplicate).' });
+      }
+    }
     return res.status(500).json({ success: false, message: 'Failed to add category.' });
   }
 });
