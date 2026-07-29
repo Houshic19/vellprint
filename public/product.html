@@ -232,7 +232,7 @@
       // Load Product Info from database
       async function loadProduct() {
         try {
-          const res = await fetch(`/api/products/${seoUrl}`);
+          const res = await fetch(`${window.API_BASE_URL}/api/products/${seoUrl}`);
           const data = await res.json();
           if (data.success && data.product) {
             productData = data.product;
@@ -338,7 +338,7 @@
       // Load related items
       async function loadRelated(catId, currentId) {
         try {
-          const res = await fetch(`/api/products?category_id=${catId}`);
+          const res = await fetch(`${window.API_BASE_URL}/api/products?category_id=${catId}`);
           const data = await res.json();
           if (data.success) {
             const grid = document.getElementById('related-grid');
