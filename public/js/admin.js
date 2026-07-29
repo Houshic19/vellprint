@@ -771,6 +771,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Expose handlers to window for inline onclick buttons
+  window.handleCreateBrandBtn = function(btn, selectId) {
+    const selectEl = document.getElementById(selectId);
+    if (selectEl) handleCreateBrand(selectEl);
+  };
+  
+  window.handleCreateCategoryBtn = function(btn, selectId, brandSelectId) {
+    const selectEl = document.getElementById(selectId);
+    const brandSelectEl = document.getElementById(brandSelectId);
+    if (selectEl && brandSelectEl) handleCreateCategory(selectEl, brandSelectEl);
+  };
+  
+  window.handleCreateSubCategoryBtn = function(btn, selectId, categorySelectId, brandSelectId) {
+    const selectEl = document.getElementById(selectId);
+    const categorySelectEl = document.getElementById(categorySelectId);
+    const brandSelectEl = document.getElementById(brandSelectId);
+    if (selectEl && categorySelectEl && brandSelectEl) handleCreateSubCategory(selectEl, categorySelectEl, brandSelectEl);
+  };
+
   async function loadMetadataFilters() {
     await loadBrands(prodBrand);
     if (editProdBrand) await loadBrands(editProdBrand);

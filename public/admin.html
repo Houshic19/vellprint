@@ -250,19 +250,28 @@
 
               <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
                 <div class="form-group">
-                  <label for="prodBrand">Brand *</label>
+                  <label for="prodBrand" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>Brand *</span>
+                    <button type="button" onclick="handleCreateBrandBtn(this, 'prodBrand')" style="background:none; border:none; color:var(--theme-primary); cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-plus"></i> Create New</button>
+                  </label>
                   <select id="prodBrand" name="brand_id" required>
                     <option value="">Select brand...</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="prodCategory">Category *</label>
+                  <label for="prodCategory" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>Category *</span>
+                    <button type="button" onclick="handleCreateCategoryBtn(this, 'prodCategory', 'prodBrand')" style="background:none; border:none; color:var(--theme-primary); cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-plus"></i> Create New</button>
+                  </label>
                   <select id="prodCategory" name="category_id" required disabled>
                     <option value="">Select category...</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="prodSubCategory">Subcategory</label>
+                  <label for="prodSubCategory" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>Subcategory</span>
+                    <button type="button" onclick="handleCreateSubCategoryBtn(this, 'prodSubCategory', 'prodCategory', 'prodBrand')" style="background:none; border:none; color:var(--theme-primary); cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-plus"></i> Create New</button>
+                  </label>
                   <select id="prodSubCategory" name="subcategory_id" disabled>
                     <option value="">Select subcategory...</option>
                   </select>
@@ -478,9 +487,18 @@
       <form id="editProductForm" enctype="multipart/form-data" novalidate>
         <input type="hidden" id="editProdId">
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">
-          <div class="form-group"><label>Brand *</label><select id="editProdBrand" name="brand_id" required><option value="">Select brand...</option></select></div>
-          <div class="form-group"><label>Category *</label><select id="editProdCategory" name="category_id" required><option value="">Select category...</option></select></div>
-          <div class="form-group"><label>Subcategory</label><select id="editProdSubCategory" name="subcategory_id"><option value="">Select subcategory...</option></select></div>
+          <div class="form-group">
+            <label style="display:flex; justify-content:space-between; align-items:center;"><span>Brand *</span> <button type="button" onclick="handleCreateBrandBtn(this, 'editProdBrand')" style="background:none; border:none; color:var(--theme-primary); cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-plus"></i> Create New</button></label>
+            <select id="editProdBrand" name="brand_id" required><option value="">Select brand...</option></select>
+          </div>
+          <div class="form-group">
+            <label style="display:flex; justify-content:space-between; align-items:center;"><span>Category *</span> <button type="button" onclick="handleCreateCategoryBtn(this, 'editProdCategory', 'editProdBrand')" style="background:none; border:none; color:var(--theme-primary); cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-plus"></i> Create New</button></label>
+            <select id="editProdCategory" name="category_id" required><option value="">Select category...</option></select>
+          </div>
+          <div class="form-group">
+            <label style="display:flex; justify-content:space-between; align-items:center;"><span>Subcategory</span> <button type="button" onclick="handleCreateSubCategoryBtn(this, 'editProdSubCategory', 'editProdCategory', 'editProdBrand')" style="background:none; border:none; color:var(--theme-primary); cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-plus"></i> Create New</button></label>
+            <select id="editProdSubCategory" name="subcategory_id"><option value="">Select subcategory...</option></select>
+          </div>
         </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
           <div class="form-group"><label>Product Name *</label><input type="text" id="editProdName" name="name" required></div>
