@@ -53,6 +53,9 @@ app.use(cors({
 app.use(cookieParser());
 app.use(xssClean());
 
+// Serve static uploaded files (like product images)
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+
 // Rate Limiting
 const globalLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 1000, message: { success: false, message: 'Too many requests, please try again later.' } });
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { success: false, message: 'Too many login attempts, please try again later.' } });
