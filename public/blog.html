@@ -271,7 +271,7 @@
           card.style.cursor = 'pointer';
 
           const categoryLabel = post.category_label || post.category || '';
-          const thumbnail = post.thumbnail || post.image_path || '/images/blog-default.jpg';
+          const thumbnail = (post.thumbnail ? window.API_BASE_URL + post.thumbnail : (post.image_path ? window.API_BASE_URL + post.image_path : '/images/blog-default.jpg'));
           const authorName = post.author || 'Vell Print Team';
           const dateStr = post.published_at || post.created_at || '';
 

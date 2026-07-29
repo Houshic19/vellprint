@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const card = document.createElement('div');
           card.className = 'offer-card reveal-scale'; // reveal class
 
-          const bgImage = offer.image_path ? `style="background-image: url('${offer.image_path}');"` : '';
+          const bgImage = offer.image_path ? `style="background-image: url('\${window.API_BASE_URL}\${offer.image_path}');"` : '';
           const whatsappUrl = `https://wa.me/919894833377?text=${encodeURIComponent(`Hi Vell Print Technology, I am interested in the offer: "${offer.title}" (${offer.discount}) enquired from your website.`)}`;
           
           card.innerHTML = `
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
           
           div.innerHTML = `
             <a href="${whatsappUrl}" target="_blank" style="display:block; height:100%;">
-              <img src="${item.image_path}" alt="${item.title}" class="gallery-img" onerror="this.src='https://images.unsplash.com/photo-1616400619175-5ebd30090406?auto=format&fit=crop&q=80&w=350'">
+              <img src="\${window.API_BASE_URL}\${item.image_path}" alt="${item.title}" class="gallery-img" onerror="this.src='https://images.unsplash.com/photo-1616400619175-5ebd30090406?auto=format&fit=crop&q=80&w=350'">
               <div class="gallery-overlay">
                 <span class="gallery-title">${item.title}</span>
               </div>
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'offer-card reveal';
             card.style.cssText = 'text-decoration:none; display:flex; flex-direction:column; height:100%;';
             card.innerHTML = `
-              <div class="offer-img-wrapper" style="background-image:url('${post.image_path}'); height:200px; background-size:cover; background-position:center;">
+              <div class="offer-img-wrapper" style="background-image:url('\${window.API_BASE_URL}\${post.image_path}'); height:200px; background-size:cover; background-position:center;">
                 <span class="offer-badge">${post.category}</span>
               </div>
               <div class="offer-details" style="padding:1.5rem; display:flex; flex-direction:column; flex-grow:1;">

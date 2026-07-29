@@ -228,7 +228,7 @@
           row.style.flexWrap = 'wrap';
 
           row.innerHTML = `
-            <img src="${item.image_path}" alt="${item.name}" style="width:70px; height:70px; object-fit:contain; border-radius:6px; border:1px solid var(--theme-border); background:var(--theme-bg);">
+            <img src="\${window.API_BASE_URL}\${item.image_path}" alt="${item.name}" style="width:70px; height:70px; object-fit:contain; border-radius:6px; border:1px solid var(--theme-border); background:var(--theme-bg);">
             <div style="flex-grow:1; min-width:180px;">
               <h4 style="margin-bottom:0.25rem; font-size:1rem;">${item.name}</h4>
               <span style="font-size:0.8rem; color:var(--theme-text-muted);"><strong>Part No:</strong> ${item.part_number || 'N/A'}</span>
