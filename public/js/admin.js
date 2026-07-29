@@ -119,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const response = await fetch(window.API_BASE_URL + '/api/admin/login', {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             username: usernameInput.value.trim(),
