@@ -644,7 +644,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data.success) {
         selectEl.innerHTML = '<option value="">Select brand...</option>';
         data.brands.forEach(b => { selectEl.innerHTML += `<option value="${b.id}">${b.name}</option>`; });
-        selectEl.innerHTML += '<option value="CREATE_NEW" style="font-weight:bold; color:var(--theme-primary);">+ Create New Brand...</option>';
         if (selectedId) selectEl.value = selectedId;
       }
     } catch(e) { console.error(e); }
@@ -660,7 +659,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
       if (data.success) {
         data.categories.forEach(c => { selectEl.innerHTML += `<option value="${c.id}">${c.name}</option>`; });
-        selectEl.innerHTML += '<option value="CREATE_NEW" style="font-weight:bold; color:var(--theme-primary);">+ Create New Category...</option>';
         if (selectedId) selectEl.value = selectedId;
       }
     } catch(e) { console.error(e); }
@@ -676,7 +674,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
       if (data.success) {
         data.categories.forEach(c => { selectEl.innerHTML += `<option value="${c.id}">${c.name}</option>`; });
-        selectEl.innerHTML += '<option value="CREATE_NEW" style="font-weight:bold; color:var(--theme-primary);">+ Create New Subcategory...</option>';
         if (selectedId) selectEl.value = selectedId;
       }
     } catch(e) { console.error(e); }
@@ -747,27 +744,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function setupDropdownListeners(brandEl, catEl, subCatEl) {
     if (!brandEl) return;
     brandEl.addEventListener('change', async (e) => {
-      if (e.target.value === 'CREATE_NEW') {
-        await handleCreateBrand(e.target);
-      } else {
-        await loadCategories(catEl, e.target.value);
-        subCatEl.innerHTML = '<option value="">Select subcategory...</option>';
-        subCatEl.disabled = true;
-      }
+      await loadCategories(catEl, e.target.value);
+      subCatEl.innerHTML = '<option value="">Select subcategory...</option>';
+      subCatEl.disabled = true;
     });
 
     catEl.addEventListener('change', async (e) => {
-      if (e.target.value === 'CREATE_NEW') {
-        await handleCreateCategory(e.target, brandEl);
-      } else {
-        await loadSubCategories(subCatEl, e.target.value);
-      }
+      await loadSubCategories(subCatEl, e.target.value);
     });
 
     subCatEl.addEventListener('change', async (e) => {
-      if (e.target.value === 'CREATE_NEW') {
-        await handleCreateSubCategory(e.target, catEl, brandEl);
-      }
+      // Subcategory change handled by form submission
     });
   }
 

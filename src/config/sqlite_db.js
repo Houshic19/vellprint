@@ -33,8 +33,12 @@ module.exports = {
     let sql = 'SELECT id, name, parent_id, brand_id, seo_url FROM categories WHERE 1=1';
     const params = {};
     if (filters.brand_id !== undefined) {
-      sql += ' AND brand_id = @brand_id';
-      params.brand_id = filters.brand_id;
+      if (filters.brand_id === null) {
+        sql += ' AND brand_id IS NULL';
+      } else {
+        sql += ' AND brand_id = @brand_id';
+        params.brand_id = filters.brand_id;
+      }
     }
     if (filters.parent_id !== undefined) {
       if (filters.parent_id === null) {
