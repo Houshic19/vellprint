@@ -1,1 +1,2 @@
-/store/product/*  /product.html  200
+/store/product/*  /product  200
+/blog/*  /blog  200
