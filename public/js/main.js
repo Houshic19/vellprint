@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Handle form submit
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       let isFormValid = true;
