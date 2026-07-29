@@ -248,19 +248,23 @@
                 <input type="text" id="prodName" name="name" required>
               </div>
 
-              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+              <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
                 <div class="form-group">
                   <label for="prodBrand">Brand *</label>
                   <select id="prodBrand" name="brand_id" required>
                     <option value="">Select brand...</option>
-                    <!-- Populated via loadFilters -->
                   </select>
                 </div>
                 <div class="form-group">
                   <label for="prodCategory">Category *</label>
-                  <select id="prodCategory" name="category_id" required>
+                  <select id="prodCategory" name="category_id" required disabled>
                     <option value="">Select category...</option>
-                    <!-- Populated via loadFilters -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="prodSubCategory">Subcategory</label>
+                  <select id="prodSubCategory" name="subcategory_id" disabled>
+                    <option value="">Select subcategory...</option>
                   </select>
                 </div>
               </div>
@@ -473,6 +477,11 @@
       <h3 class="gradient-text" style="margin-bottom:1.5rem;"><i class="fa-solid fa-pen-to-square"></i> Edit Product</h3>
       <form id="editProductForm" enctype="multipart/form-data" novalidate>
         <input type="hidden" id="editProdId">
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">
+          <div class="form-group"><label>Brand *</label><select id="editProdBrand" name="brand_id" required><option value="">Select brand...</option></select></div>
+          <div class="form-group"><label>Category *</label><select id="editProdCategory" name="category_id" required><option value="">Select category...</option></select></div>
+          <div class="form-group"><label>Subcategory</label><select id="editProdSubCategory" name="subcategory_id"><option value="">Select subcategory...</option></select></div>
+        </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
           <div class="form-group"><label>Product Name *</label><input type="text" id="editProdName" name="name" required></div>
           <div class="form-group"><label>SEO URL *</label><input type="text" id="editProdSeoUrl" name="seo_url" required></div>

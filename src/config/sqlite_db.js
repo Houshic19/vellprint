@@ -29,19 +29,38 @@ module.exports = {
   getBrands: async () => db.prepare('SELECT id, name, logo_path FROM brands ORDER BY name').all(),
   addBrand: async (brand) => db.prepare('INSERT INTO brands (name, logo_path) VALUES (@name, @logo_path)').run(brand).lastInsertRowid,
   
-  getCategories: async () => db.prepare('SELECT id, name, parent_id, seo_url FROM categories ORDER BY id').all(),
-  addCategory: async (cat) => db.prepare('INSERT INTO categories (name, parent_id, seo_url) VALUES (@name, @parent_id, @seo_url)').run(cat).lastInsertRowid,
+  getCategories: async (filters = {}) => {
+    let sql = 'SELECT id, name, parent_id, brand_id, seo_url FROM categories WHERE 1=1';
+    const params = {};
+    if (filters.brand_id !== undefined) {
+      sql += ' AND brand_id = @brand_id';
+      params.brand_id = filters.brand_id;
+    }
+    if (filters.parent_id !== undefined) {
+      if (filters.parent_id === null) {
+        sql += ' AND parent_id IS NULL';
+      } else {
+        sql += ' AND parent_id = @parent_id';
+        params.parent_id = filters.parent_id;
+      }
+    }
+    sql += ' ORDER BY name ASC';
+    return db.prepare(sql).all(params);
+  },
+  addCategory: async (cat) => db.prepare('INSERT INTO categories (name, parent_id, brand_id, seo_url) VALUES (@name, @parent_id, @brand_id, @seo_url)').run(cat).lastInsertRowid,
   
   getProducts: async (filters = {}) => {
     let sql = `
       SELECT p.id, p.name, p.brand_id, b.name as brand_name, p.part_number, p.oem_part_number, 
              p.alternate_part_number, p.hsn_code, p.sku, p.category_id, c.name as category_name,
+             p.subcategory_id, sc.name as subcategory_name,
              p.short_description, p.long_description, p.tech_specifications, p.warranty,
              p.moq, p.unit, p.weight, p.availability, p.stock_status, p.image_path, p.datasheet_path,
              p.is_featured, p.is_popular, p.is_new_arrival, p.meta_title, p.meta_description, p.seo_url
       FROM products p
       LEFT JOIN brands b ON p.brand_id = b.id
       LEFT JOIN categories c ON p.category_id = c.id
+      LEFT JOIN categories sc ON p.subcategory_id = sc.id
       WHERE 1=1 `;
     
     const params = {};
@@ -81,10 +100,11 @@ module.exports = {
   
   getProductBySeoUrl: async (seoUrl) => {
     const product = db.prepare(`
-      SELECT p.*, b.name as brand_name, c.name as category_name
+      SELECT p.*, b.name as brand_name, c.name as category_name, sc.name as subcategory_name
       FROM products p
       LEFT JOIN brands b ON p.brand_id = b.id
       LEFT JOIN categories c ON p.category_id = c.id
+      LEFT JOIN categories sc ON p.subcategory_id = sc.id
       WHERE p.seo_url = ?`).get(seoUrl);
       
     if (product) {
@@ -94,7 +114,7 @@ module.exports = {
   },
   
   addProduct: async (product) => {
-    const cols = ['name', 'brand_id', 'part_number', 'oem_part_number', 'alternate_part_number', 'hsn_code', 'sku', 'category_id', 'short_description', 'long_description', 'tech_specifications', 'warranty', 'moq', 'unit', 'weight', 'availability', 'stock_status', 'image_path', 'datasheet_path', 'is_featured', 'is_popular', 'is_new_arrival', 'meta_title', 'meta_description', 'seo_url'];
+    const cols = ['name', 'brand_id', 'part_number', 'oem_part_number', 'alternate_part_number', 'hsn_code', 'sku', 'category_id', 'subcategory_id', 'short_description', 'long_description', 'tech_specifications', 'warranty', 'moq', 'unit', 'weight', 'availability', 'stock_status', 'image_path', 'datasheet_path', 'is_featured', 'is_popular', 'is_new_arrival', 'meta_title', 'meta_description', 'seo_url'];
     const safeProd = {};
     cols.forEach(c => safeProd[c] = product[c] !== undefined ? product[c] : null);
     
@@ -110,7 +130,7 @@ module.exports = {
 
   updateProduct: async (id, fields) => {
     const editableCols = ['name', 'brand_id', 'part_number', 'oem_part_number', 'alternate_part_number',
-      'hsn_code', 'sku', 'category_id', 'short_description', 'long_description', 'tech_specifications',
+      'hsn_code', 'sku', 'category_id', 'subcategory_id', 'short_description', 'long_description', 'tech_specifications',
       'warranty', 'moq', 'unit', 'weight', 'availability', 'stock_status', 'image_path',
       'is_featured', 'is_popular', 'is_new_arrival', 'meta_title', 'meta_description', 'seo_url'];
     const safeFields = {};

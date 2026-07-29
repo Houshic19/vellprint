@@ -529,6 +529,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const prodBrand = document.getElementById('prodBrand');
   const prodCategory = document.getElementById('prodCategory');
+  const prodSubCategory = document.getElementById('prodSubCategory');
+  const editProdBrand = document.getElementById('editProdBrand');
+  const editProdCategory = document.getElementById('editProdCategory');
+  const editProdSubCategory = document.getElementById('editProdSubCategory');
   const productForm = document.getElementById('productForm');
   const bulkProductForm = document.getElementById('bulkProductForm');
   const adminProductsList = document.getElementById('admin-products-list');
@@ -607,26 +611,150 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Filters Options
-  async function loadMetadataFilters() {
-    if (!prodBrand || !prodCategory) return;
+  
+  // Hierarchical Category Logic
+  async function loadBrands(selectEl, selectedId = null) {
+    if (!selectEl) return;
     try {
       const res = await fetch(window.API_BASE_URL + '/api/store/metadata');
       const data = await res.json();
       if (data.success) {
-        prodBrand.innerHTML = '<option value="">Select brand...</option>';
-        prodCategory.innerHTML = '<option value="">Select category...</option>';
-        
-        data.brands.forEach(b => {
-          prodBrand.innerHTML += `<option value="${b.id}">${b.name}</option>`;
-        });
-        data.categories.forEach(c => {
-          prodCategory.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-        });
+        selectEl.innerHTML = '<option value="">Select brand...</option>';
+        data.brands.forEach(b => { selectEl.innerHTML += `<option value="${b.id}">${b.name}</option>`; });
+        selectEl.innerHTML += '<option value="CREATE_NEW" style="font-weight:bold; color:var(--theme-primary);">+ Create New Brand...</option>';
+        if (selectedId) selectEl.value = selectedId;
       }
-    } catch (e) {
-      console.error(e);
-    }
+    } catch(e) { console.error(e); }
   }
+
+  async function loadCategories(selectEl, brandId, selectedId = null) {
+    if (!selectEl) return;
+    selectEl.innerHTML = '<option value="">Select category...</option>';
+    if (!brandId) { selectEl.disabled = true; return; }
+    selectEl.disabled = false;
+    try {
+      const res = await fetch(`${window.API_BASE_URL}/api/categories?brand_id=${brandId}&parent_id=null`);
+      const data = await res.json();
+      if (data.success) {
+        data.categories.forEach(c => { selectEl.innerHTML += `<option value="${c.id}">${c.name}</option>`; });
+        selectEl.innerHTML += '<option value="CREATE_NEW" style="font-weight:bold; color:var(--theme-primary);">+ Create New Category...</option>';
+        if (selectedId) selectEl.value = selectedId;
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  async function loadSubCategories(selectEl, categoryId, selectedId = null) {
+    if (!selectEl) return;
+    selectEl.innerHTML = '<option value="">Select subcategory...</option>';
+    if (!categoryId) { selectEl.disabled = true; return; }
+    selectEl.disabled = false;
+    try {
+      const res = await fetch(`${window.API_BASE_URL}/api/categories?parent_id=${categoryId}`);
+      const data = await res.json();
+      if (data.success) {
+        data.categories.forEach(c => { selectEl.innerHTML += `<option value="${c.id}">${c.name}</option>`; });
+        selectEl.innerHTML += '<option value="CREATE_NEW" style="font-weight:bold; color:var(--theme-primary);">+ Create New Subcategory...</option>';
+        if (selectedId) selectEl.value = selectedId;
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  async function handleCreateBrand(selectEl) {
+    const name = prompt("Enter new Brand name:");
+    if (!name) { selectEl.value = ""; return; }
+    try {
+      const formData = new FormData();
+      formData.append('name', name);
+      const res = await fetch(window.API_BASE_URL + '/api/admin/brands', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      });
+      const data = await res.json();
+      if (data.success) {
+        await loadBrands(prodBrand, selectEl === prodBrand ? data.brandId : null);
+        if (editProdBrand) await loadBrands(editProdBrand, selectEl === editProdBrand ? data.brandId : null);
+        if (selectEl === prodBrand) prodCategory.disabled = true;
+        if (selectEl === editProdBrand) editProdCategory.disabled = true;
+      } else { alert(data.message || 'Error creating brand'); selectEl.value = ""; }
+    } catch(e) { console.error(e); selectEl.value = ""; }
+  }
+
+  async function handleCreateCategory(selectEl, brandSelectEl) {
+    const brandId = brandSelectEl.value;
+    if (!brandId || brandId === 'CREATE_NEW') { alert("Please select a valid Brand first."); selectEl.value = ""; return; }
+    const name = prompt("Enter new Category name:");
+    if (!name) { selectEl.value = ""; return; }
+    try {
+      const seo_url = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const res = await fetch(window.API_BASE_URL + '/api/admin/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ name, brand_id: brandId, seo_url })
+      });
+      const data = await res.json();
+      if (data.success) {
+        await loadCategories(selectEl, brandId, data.categoryId);
+      } else { alert(data.message || 'Error creating category'); selectEl.value = ""; }
+    } catch(e) { console.error(e); selectEl.value = ""; }
+  }
+
+  async function handleCreateSubCategory(selectEl, categorySelectEl, brandSelectEl) {
+    const categoryId = categorySelectEl.value;
+    const brandId = brandSelectEl.value;
+    if (!categoryId || categoryId === 'CREATE_NEW') { alert("Please select a valid Category first."); selectEl.value = ""; return; }
+    const name = prompt("Enter new Subcategory name:");
+    if (!name) { selectEl.value = ""; return; }
+    try {
+      const seo_url = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const res = await fetch(window.API_BASE_URL + '/api/admin/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ name, brand_id: brandId, parent_id: categoryId, seo_url })
+      });
+      const data = await res.json();
+      if (data.success) {
+        await loadSubCategories(selectEl, categoryId, data.categoryId);
+      } else { alert(data.message || 'Error creating subcategory'); selectEl.value = ""; }
+    } catch(e) { console.error(e); selectEl.value = ""; }
+  }
+
+  function setupDropdownListeners(brandEl, catEl, subCatEl) {
+    if (!brandEl) return;
+    brandEl.addEventListener('change', async (e) => {
+      if (e.target.value === 'CREATE_NEW') {
+        await handleCreateBrand(e.target);
+      } else {
+        await loadCategories(catEl, e.target.value);
+        subCatEl.innerHTML = '<option value="">Select subcategory...</option>';
+        subCatEl.disabled = true;
+      }
+    });
+
+    catEl.addEventListener('change', async (e) => {
+      if (e.target.value === 'CREATE_NEW') {
+        await handleCreateCategory(e.target, brandEl);
+      } else {
+        await loadSubCategories(subCatEl, e.target.value);
+      }
+    });
+
+    subCatEl.addEventListener('change', async (e) => {
+      if (e.target.value === 'CREATE_NEW') {
+        await handleCreateSubCategory(e.target, catEl, brandEl);
+      }
+    });
+  }
+
+  async function loadMetadataFilters() {
+    await loadBrands(prodBrand);
+    if (editProdBrand) await loadBrands(editProdBrand);
+    setupDropdownListeners(prodBrand, prodCategory, prodSubCategory);
+    if (editProdBrand) setupDropdownListeners(editProdBrand, editProdCategory, editProdSubCategory);
+  }
+
 
   // Products
   async function loadAdminProducts(searchQuery = '') {

@@ -356,6 +356,19 @@ app.get('/api/store/metadata', async (req, res) => {
   }
 });
 
+app.get('/api/categories', async (req, res) => {
+  try {
+    const { brand_id, parent_id } = req.query;
+    const filters = {};
+    if (brand_id !== undefined) filters.brand_id = brand_id === 'null' ? null : parseInt(brand_id, 10);
+    if (parent_id !== undefined) filters.parent_id = parent_id === 'null' ? null : parseInt(parent_id, 10);
+    const categories = await db.getCategories(filters);
+    return res.json({ success: true, categories });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Failed to fetch categories.' });
+  }
+});
+
 // Autocomplete API
 app.get('/api/search/autocomplete', async (req, res) => {
   try {
@@ -520,10 +533,10 @@ app.post('/api/admin/brands', auth, upload.single('image'), async (req, res) => 
 
 // POST Create Category
 app.post('/api/admin/categories', auth, async (req, res) => {
-  const { name, parent_id, seo_url } = req.body;
+  const { name, parent_id, brand_id, seo_url } = req.body;
   if (!name || !seo_url) return res.status(400).json({ success: false, message: 'Name and SEO URL are required.' });
   try {
-    const categoryId = await db.addCategory({ name, parent_id, seo_url });
+    const categoryId = await db.addCategory({ name, parent_id: parent_id || null, brand_id: brand_id || null, seo_url });
     return res.json({ success: true, message: 'Category added successfully.', categoryId });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Failed to add category.' });
@@ -534,7 +547,7 @@ app.post('/api/admin/categories', auth, async (req, res) => {
 app.post('/api/admin/products', auth, upload.single('image'), async (req, res) => {
   const { 
     name, brand_id, part_number, oem_part_number, alternate_part_number,
-    hsn_code, sku, category_id, short_description, long_description,
+    hsn_code, sku, category_id, subcategory_id, short_description, long_description,
     tech_specifications, warranty, moq, unit, weight, availability,
     stock_status, is_featured, is_popular, is_new_arrival, meta_title,
     meta_description, seo_url, compatibilities
@@ -549,7 +562,7 @@ app.post('/api/admin/products', auth, upload.single('image'), async (req, res) =
 
     const productId = await db.addProduct({
       name, brand_id, part_number, oem_part_number, alternate_part_number,
-      hsn_code, sku, category_id, short_description, long_description,
+      hsn_code, sku, category_id, subcategory_id: subcategory_id || null, short_description, long_description,
       tech_specifications, warranty, moq, unit, weight, availability,
       stock_status, image_path: imagePath, is_featured, is_popular,
       is_new_arrival, meta_title, meta_description, seo_url
@@ -601,7 +614,7 @@ app.put('/api/admin/products/:id', auth, upload.single('image'), async (req, res
   const { id } = req.params;
   const {
     name, brand_id, part_number, oem_part_number, alternate_part_number,
-    hsn_code, sku, category_id, short_description, long_description,
+    hsn_code, sku, category_id, subcategory_id, short_description, long_description,
     tech_specifications, warranty, moq, unit, weight, availability,
     stock_status, is_featured, is_popular, is_new_arrival, meta_title,
     meta_description, seo_url
@@ -613,7 +626,7 @@ app.put('/api/admin/products/:id', auth, upload.single('image'), async (req, res
   try {
     const fields = {
       name, brand_id, part_number, oem_part_number, alternate_part_number,
-      hsn_code, sku, category_id, short_description, long_description,
+      hsn_code, sku, category_id, subcategory_id: subcategory_id || null, short_description, long_description,
       tech_specifications, warranty, moq, unit, weight, availability,
       stock_status, is_featured, is_popular, is_new_arrival, meta_title,
       meta_description, seo_url
