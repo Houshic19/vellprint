@@ -654,7 +654,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!brandId) { selectEl.disabled = true; return; }
     selectEl.disabled = false;
     try {
-      const res = await fetch(`${window.API_BASE_URL}/api/categories?brand_id=${brandId}&parent_id=null`);
+      const res = await fetch(`${window.API_BASE_URL}/api/categories?brand_id=${brandId}&parent_id=null&_t=${Date.now()}`);
       const data = await res.json();
       if (data.success) {
         data.categories.forEach(c => { selectEl.innerHTML += `<option value="${c.id}">${c.name}</option>`; });
@@ -669,7 +669,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!categoryId) { selectEl.disabled = true; return; }
     selectEl.disabled = false;
     try {
-      const res = await fetch(`${window.API_BASE_URL}/api/categories?parent_id=${categoryId}`);
+      const res = await fetch(`${window.API_BASE_URL}/api/categories?parent_id=${categoryId}&_t=${Date.now()}`);
       const data = await res.json();
       if (data.success) {
         data.categories.forEach(c => { selectEl.innerHTML += `<option value="${c.id}">${c.name}</option>`; });

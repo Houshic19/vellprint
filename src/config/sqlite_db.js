@@ -5,6 +5,12 @@ const bcrypt = require('bcryptjs');
 const db = new Database(path.join(__dirname, '../../data/vellprint.sqlite'));
 db.pragma('journal_mode = WAL');
 
+try {
+  db.prepare('ALTER TABLE products ADD COLUMN price REAL DEFAULT 0.00').run();
+} catch (e) {
+  // Column might already exist
+}
+
 module.exports = {
   initDB: async () => { console.log('SQLite DB initialized'); },
   getAdminUser: async (username) => db.prepare('SELECT * FROM admin_users WHERE username = ?').get(username),
