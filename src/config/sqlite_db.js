@@ -65,7 +65,7 @@ module.exports = {
              p.alternate_part_number, p.hsn_code, p.sku, p.category_id, c.name as category_name,
              p.subcategory_id, sc.name as subcategory_name,
              p.short_description, p.long_description, p.tech_specifications, p.warranty,
-             p.moq, p.unit, p.weight, p.availability, p.stock_status, p.image_path, p.datasheet_path,
+             p.moq, p.unit, p.price, p.weight, p.availability, p.stock_status, p.image_path, p.datasheet_path,
              p.is_featured, p.is_popular, p.is_new_arrival, p.meta_title, p.meta_description, p.seo_url
       FROM products p
       LEFT JOIN brands b ON p.brand_id = b.id
