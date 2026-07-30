@@ -289,7 +289,7 @@
                 </div>
               </div>
 
-              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+              <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
                 <div class="form-group">
                   <label for="prodMoq">MOQ *</label>
                   <input type="number" id="prodMoq" name="moq" value="1" min="1" required>
@@ -298,11 +298,31 @@
                   <label for="prodUnit">Unit *</label>
                   <input type="text" id="prodUnit" name="unit" value="PCS" required>
                 </div>
+                <div class="form-group">
+                  <label for="prodPrice">Price</label>
+                  <input type="number" id="prodPrice" name="price" step="0.01" value="0.00">
+                </div>
               </div>
 
               <div class="form-group">
                 <label for="prodShortDesc">Short Summary *</label>
                 <input type="text" id="prodShortDesc" name="short_description" required>
+              </div>
+
+              <div class="form-group">
+                <label for="prodLongDesc">Detailed Description</label>
+                <textarea id="prodLongDesc" name="long_description" style="min-height:80px;"></textarea>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                  <label for="prodTechSpecs">Technical Specifications</label>
+                  <textarea id="prodTechSpecs" name="tech_specifications" style="min-height:80px;"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="prodWarranty">Warranty Info</label>
+                  <input type="text" id="prodWarranty" name="warranty">
+                </div>
               </div>
 
               <div class="form-group">
@@ -508,7 +528,17 @@
           <div class="form-group"><label>Availability</label><select id="editProdAvailability" name="availability"><option value="In Stock">In Stock</option><option value="Out of Stock">Out of Stock</option><option value="Pre-Order">Pre-Order</option></select></div>
           <div class="form-group"><label>Stock Status</label><select id="editProdStockStatus" name="stock_status"><option value="Available">Available</option><option value="Out of Stock">Out of Stock</option><option value="Pre-Order">Pre-Order</option></select></div>
         </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-top:1rem;">
+          <div class="form-group"><label>MOQ *</label><input type="number" id="editProdMoq" name="moq" value="1" min="1" required></div>
+          <div class="form-group"><label>Unit *</label><input type="text" id="editProdUnit" name="unit" value="PCS" required></div>
+          <div class="form-group"><label>Price</label><input type="number" id="editProdPrice" name="price" step="0.01" value="0.00"></div>
+        </div>
         <div class="form-group"><label>Short Description</label><textarea id="editProdDesc" name="short_description" style="min-height:80px;"></textarea></div>
+        <div class="form-group"><label>Detailed Description</label><textarea id="editProdLongDesc" name="long_description" style="min-height:80px;"></textarea></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+          <div class="form-group"><label>Technical Specifications</label><textarea id="editProdTechSpecs" name="tech_specifications" style="min-height:80px;"></textarea></div>
+          <div class="form-group"><label>Warranty Info</label><input type="text" id="editProdWarranty" name="warranty"></div>
+        </div>
         <div class="form-group"><label>Replace Image (optional)</label><input type="file" name="image" accept="image/*" style="padding:0.5rem;"></div>
         <div style="display:flex; gap:1rem; margin-top:1rem;">
           <button type="submit" class="cta-btn" id="editProdSubmitBtn" style="flex:1;"><i class="fa-solid fa-save"></i> Save Changes</button>

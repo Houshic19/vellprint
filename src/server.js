@@ -561,7 +561,7 @@ app.post('/api/admin/products', auth, upload.single('image'), async (req, res) =
   const { 
     name, brand_id, part_number, oem_part_number, alternate_part_number,
     hsn_code, sku, category_id, subcategory_id, short_description, long_description,
-    tech_specifications, warranty, moq, unit, weight, availability,
+    tech_specifications, warranty, moq, unit, price, weight, availability,
     stock_status, is_featured, is_popular, is_new_arrival, meta_title,
     meta_description, seo_url, compatibilities
   } = req.body;
@@ -576,7 +576,7 @@ app.post('/api/admin/products', auth, upload.single('image'), async (req, res) =
     const productId = await db.addProduct({
       name, brand_id, part_number, oem_part_number, alternate_part_number,
       hsn_code, sku, category_id, subcategory_id: subcategory_id || null, short_description, long_description,
-      tech_specifications, warranty, moq, unit, weight, availability,
+      tech_specifications, warranty, moq, unit, price, weight, availability,
       stock_status, image_path: imagePath, is_featured, is_popular,
       is_new_arrival, meta_title, meta_description, seo_url
     });
@@ -628,7 +628,7 @@ app.put('/api/admin/products/:id', auth, upload.single('image'), async (req, res
   const {
     name, brand_id, part_number, oem_part_number, alternate_part_number,
     hsn_code, sku, category_id, subcategory_id, short_description, long_description,
-    tech_specifications, warranty, moq, unit, weight, availability,
+    tech_specifications, warranty, moq, unit, price, weight, availability,
     stock_status, is_featured, is_popular, is_new_arrival, meta_title,
     meta_description, seo_url
   } = req.body;
@@ -640,7 +640,7 @@ app.put('/api/admin/products/:id', auth, upload.single('image'), async (req, res
     const fields = {
       name, brand_id, part_number, oem_part_number, alternate_part_number,
       hsn_code, sku, category_id, subcategory_id: subcategory_id || null, short_description, long_description,
-      tech_specifications, warranty, moq, unit, weight, availability,
+      tech_specifications, warranty, moq, unit, price, weight, availability,
       stock_status, is_featured, is_popular, is_new_arrival, meta_title,
       meta_description, seo_url
     };

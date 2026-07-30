@@ -1,11 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   // --- FETCH INTERCEPTOR FOR BEARER TOKEN ---
   const originalFetch = window.fetch;
-  window.fetch = async function() {
-    let [resource, config] = arguments;
-    if (!config) config = {};
+  window.fetch = async function(resource, config = {}) {
     if (!config.headers) config.headers = {};
-    
+
     const token = localStorage.getItem('vell_admin_token');
     if (token) {
       if (config.headers instanceof Headers) {
@@ -14,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         config.headers['Authorization'] = 'Bearer ' + token;
       }
     }
-    return originalFetch.apply(this, arguments);
+    return originalFetch(resource, config);
   };
   // ------------------------------------------
 
@@ -24,6 +22,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('loginForm');
   const loginErrorAlert = document.getElementById('login-error-alert');
   
+  const prodBrand = document.getElementById('prodBrand');
+  const prodCategory = document.getElementById('prodCategory');
+  const prodSubCategory = document.getElementById('prodSubCategory');
+  const editProdBrand = document.getElementById('editProdBrand');
+  const editProdCategory = document.getElementById('editProdCategory');
+  const editProdSubCategory = document.getElementById('editProdSubCategory');
+  const productForm = document.getElementById('productForm');
+  const bulkProductForm = document.getElementById('bulkProductForm');
+  const adminProductsList = document.getElementById('admin-products-list');
+  const adminOffersList = document.getElementById('admin-offers-list');
+  const adminGalleryList = document.getElementById('admin-gallery-list');
+  const adminDealersList = document.getElementById('admin-dealers-list');
+  const adminEnquiriesList = document.getElementById('admin-enquiries-list');  
   let loggedInUser = localStorage.getItem('vell_admin_user');
 
   // Check auth state on load
@@ -312,7 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 4. Manage Offers (Fetch, Create, Delete)
-  const adminOffersList = document.getElementById('admin-offers-list');
   const offerForm = document.getElementById('offerForm');
 
   async function loadAdminOffers() {
@@ -435,7 +445,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 5. Manage Gallery (Fetch, Create, Delete)
-  const adminGalleryList = document.getElementById('admin-gallery-list');
   const galleryForm = document.getElementById('galleryForm');
 
   async function loadAdminGallery() {
@@ -550,17 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- B2B MARKETPLACE DASHBOARD CODE ---
 
-  const prodBrand = document.getElementById('prodBrand');
-  const prodCategory = document.getElementById('prodCategory');
-  const prodSubCategory = document.getElementById('prodSubCategory');
-  const editProdBrand = document.getElementById('editProdBrand');
-  const editProdCategory = document.getElementById('editProdCategory');
-  const editProdSubCategory = document.getElementById('editProdSubCategory');
-  const productForm = document.getElementById('productForm');
-  const bulkProductForm = document.getElementById('bulkProductForm');
-  const adminProductsList = document.getElementById('admin-products-list');
-  const adminDealersList = document.getElementById('admin-dealers-list');
-  const adminEnquiriesList = document.getElementById('admin-enquiries-list');
+  // Elements moved to the top of the script to prevent ReferenceError during load
 
   // Stats
   async function loadDashboardStats() {
@@ -1423,7 +1422,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('editProdSeoUrl').value = p.seo_url || '';
     document.getElementById('editProdPart').value = p.part_number || '';
     document.getElementById('editProdSku').value = p.sku || '';
+    document.getElementById('editProdMoq').value = p.moq || 1;
+    document.getElementById('editProdUnit').value = p.unit || 'PCS';
+    document.getElementById('editProdPrice').value = p.price !== undefined && p.price !== null ? p.price : '0.00';
     document.getElementById('editProdDesc').value = p.short_description || '';
+    document.getElementById('editProdLongDesc').value = p.long_description || '';
+    document.getElementById('editProdTechSpecs').value = p.tech_specifications || '';
+    document.getElementById('editProdWarranty').value = p.warranty || '';
     document.getElementById('editProdAvailability').value = p.availability || 'In Stock';
     document.getElementById('editProdStockStatus').value = p.stock_status || 'Available';
     modal.style.display = 'flex';
