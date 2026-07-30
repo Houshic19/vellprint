@@ -928,7 +928,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         if (!res.ok && res.status === 413) {
-           throw new Error("File too large. Maximum size allowed is 1MB.");
+           throw new Error("File too large. Your server (Nginx/Cloudflare) is blocking the upload size.");
         }
         
         let data;
@@ -1498,7 +1498,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         if (!res.ok && res.status === 413) {
-           throw new Error("File too large. Maximum size allowed is 1MB.");
+           throw new Error("File too large. Your server (Nginx/Cloudflare) is blocking the upload size.");
         }
         
         let data;
