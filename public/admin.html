@@ -252,7 +252,10 @@
                 <div class="form-group">
                   <label for="prodBrand" style="display:flex; justify-content:space-between; align-items:center;">
                     <span>Brand *</span>
-                    <button type="button" onclick="handleCreateBrandBtn(this, 'prodBrand')" style="background:none; border:none; color:var(--theme-primary); cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-plus"></i> Create New</button>
+                    <div>
+                      <button type="button" onclick="handleDeleteBrandBtn(this, 'prodBrand')" style="background:none; border:none; color:var(--color-danger, red); cursor:pointer; font-size:0.8rem; margin-right:5px;"><i class="fa-solid fa-trash"></i> Delete</button>
+                      <button type="button" onclick="handleCreateBrandBtn(this, 'prodBrand')" style="background:none; border:none; color:var(--theme-primary); cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-plus"></i> Create New</button>
+                    </div>
                   </label>
                   <select id="prodBrand" name="brand_id" required>
                     <option value="">Select brand...</option>
@@ -298,9 +301,6 @@
                   <label for="prodUnit">Unit *</label>
                   <input type="text" id="prodUnit" name="unit" value="PCS" required>
                 </div>
-                <div class="form-group">
-                  <label for="prodPrice">Price</label>
-                  <input type="number" id="prodPrice" name="price" step="0.01" value="0.00">
                 </div>
               </div>
 
@@ -508,7 +508,13 @@
         <input type="hidden" id="editProdId">
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">
           <div class="form-group">
-            <label style="display:flex; justify-content:space-between; align-items:center;"><span>Brand *</span> <button type="button" onclick="handleCreateBrandBtn(this, 'editProdBrand')" style="background:none; border:none; color:var(--theme-primary); cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-plus"></i> Create New</button></label>
+            <label style="display:flex; justify-content:space-between; align-items:center;">
+              <span>Brand *</span> 
+              <div>
+                <button type="button" onclick="handleDeleteBrandBtn(this, 'editProdBrand')" style="background:none; border:none; color:var(--color-danger, red); cursor:pointer; font-size:0.8rem; margin-right:5px;"><i class="fa-solid fa-trash"></i> Delete</button>
+                <button type="button" onclick="handleCreateBrandBtn(this, 'editProdBrand')" style="background:none; border:none; color:var(--theme-primary); cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-plus"></i> Create New</button>
+              </div>
+            </label>
             <select id="editProdBrand" name="brand_id" required><option value="">Select brand...</option></select>
           </div>
           <div class="form-group">
@@ -531,7 +537,6 @@
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-top:1rem;">
           <div class="form-group"><label>MOQ *</label><input type="number" id="editProdMoq" name="moq" value="1" min="1" required></div>
           <div class="form-group"><label>Unit *</label><input type="text" id="editProdUnit" name="unit" value="PCS" required></div>
-          <div class="form-group"><label>Price</label><input type="number" id="editProdPrice" name="price" step="0.01" value="0.00"></div>
         </div>
         <div class="form-group"><label>Short Description</label><textarea id="editProdDesc" name="short_description" style="min-height:80px;"></textarea></div>
         <div class="form-group"><label>Detailed Description</label><textarea id="editProdLongDesc" name="long_description" style="min-height:80px;"></textarea></div>

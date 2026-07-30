@@ -638,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadBrands(selectEl, selectedId = null) {
     if (!selectEl) return;
     try {
-      const res = await fetch(window.API_BASE_URL + '/api/store/metadata');
+      const res = await fetch(window.API_BASE_URL + '/api/store/metadata?_t=' + Date.now());
       const data = await res.json();
       if (data.success) {
         selectEl.innerHTML = '<option value="">Select brand...</option>';
@@ -769,6 +769,35 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selectEl && brandSelectEl) handleCreateCategory(selectEl, brandSelectEl);
   };
   
+  window.handleDeleteBrandBtn = async function(btn, selectId) {
+    const selectEl = document.getElementById(selectId);
+    if (!selectEl) return;
+    const brandId = selectEl.value;
+    if (!brandId) {
+      alert("Please select a brand to delete.");
+      return;
+    }
+    const brandName = selectEl.options[selectEl.selectedIndex].text;
+    if (!confirm(`Are you sure you want to delete the brand "${brandName}"?`)) return;
+
+    try {
+      const res = await fetch(window.API_BASE_URL + `/api/admin/brands/${brandId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Brand deleted successfully.");
+        await loadMetadataFilters();
+      } else {
+        alert(data.message || 'Failed to delete brand.');
+      }
+    } catch(e) {
+      console.error(e);
+      alert('Error deleting brand.');
+    }
+  };
+
   window.handleCreateSubCategoryBtn = function(btn, selectId, categorySelectId, brandSelectId) {
     const selectEl = document.getElementById(selectId);
     const categorySelectEl = document.getElementById(categorySelectId);
@@ -892,27 +921,37 @@ document.addEventListener('DOMContentLoaded', () => {
       const formData = new FormData(productForm);
 
       try {
-        const res = await fetch(window.API_BASE_URL + '/api/admin/products', {
+        const res = await fetch(`${window.API_BASE_URL}/api/admin/products`, {
           method: 'POST',
           credentials: 'include',
           body: formData
         });
-        const data = await res.json();
+        
+        if (!res.ok && res.status === 413) {
+           throw new Error("File too large. Maximum size allowed is 1MB.");
+        }
+        
+        let data;
+        try {
+          data = await res.json();
+        } catch(e) {
+          throw new Error("Server returned an invalid response. Image might be too large.");
+        }
+        
         if (data.success) {
-          productForm.reset();
-          resetUploadArea('product-upload-area', 'product-img-preview', 'Click or drag image to upload');
+          addPartForm.reset();
+          resetUploadArea('add-prod-upload-area', 'add-prod-img-preview', 'Drag photo here or click to upload');
+          resetUploadArea('add-prod-datasheet-area', 'add-prod-datasheet-preview', 'Drag PDF datasheet here or click to upload');
           loadAdminProducts();
-          loadDashboardStats();
-          alert('Product added to catalog!');
+          alert('Product added successfully!');
         } else {
           alert(data.message || 'Failed to add product.');
         }
       } catch (err) {
-        console.error(err);
-        alert('Network error adding product.');
+        alert(err.message || 'Network error adding product.');
       } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fa-solid fa-box-archive"></i> Add Spare Product';
+        submitBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Product';
       }
     });
   }
@@ -1457,7 +1496,18 @@ document.addEventListener('DOMContentLoaded', () => {
           credentials: 'include',
           body: formData
         });
-        const data = await res.json();
+        
+        if (!res.ok && res.status === 413) {
+           throw new Error("File too large. Maximum size allowed is 1MB.");
+        }
+        
+        let data;
+        try {
+          data = await res.json();
+        } catch(e) {
+          throw new Error("Server returned an invalid response. Image might be too large.");
+        }
+        
         if (data.success) {
           if (editModal) editModal.style.display = 'none';
           loadAdminProducts();
@@ -1466,7 +1516,7 @@ document.addEventListener('DOMContentLoaded', () => {
           alert(data.message || 'Failed to update product.');
         }
       } catch (err) {
-        alert('Network error updating product.');
+        alert(err.message || 'Network error updating product.');
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes';

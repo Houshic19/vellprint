@@ -34,6 +34,7 @@ module.exports = {
   
   getBrands: async () => db.prepare('SELECT id, name, logo_path FROM brands ORDER BY name').all(),
   addBrand: async (brand) => db.prepare('INSERT INTO brands (name, logo_path) VALUES (@name, @logo_path)').run(brand).lastInsertRowid,
+  deleteBrand: async (id) => db.prepare('DELETE FROM brands WHERE id = ?').run(id),
   
   getCategories: async (filters = {}) => {
     let sql = 'SELECT id, name, parent_id, brand_id, seo_url FROM categories WHERE 1=1';

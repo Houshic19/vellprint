@@ -369,8 +369,8 @@ app.get('/api/categories', async (req, res) => {
   try {
     const { brand_id, parent_id } = req.query;
     const filters = {};
-    if (brand_id !== undefined) filters.brand_id = brand_id === 'null' ? null : parseInt(brand_id, 10);
-    if (parent_id !== undefined) filters.parent_id = parent_id === 'null' ? null : parseInt(parent_id, 10);
+    if (brand_id !== undefined && brand_id !== '') filters.brand_id = brand_id === 'null' ? null : parseInt(brand_id, 10);
+    if (parent_id !== undefined && parent_id !== '') filters.parent_id = parent_id === 'null' ? null : parseInt(parent_id, 10);
     const categories = await db.getCategories(filters);
     return res.json({ success: true, categories });
   } catch (err) {
@@ -537,6 +537,17 @@ app.post('/api/admin/brands', auth, upload.single('image'), async (req, res) => 
     return res.json({ success: true, message: 'Brand added successfully.', brandId });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Failed to add brand.' });
+  }
+});
+
+// DELETE Brand
+app.delete('/api/admin/brands/:id', auth, async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db.deleteBrand(id);
+    return res.json({ success: true, message: 'Brand deleted successfully.' });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Failed to delete brand. It may be in use.' });
   }
 });
 
