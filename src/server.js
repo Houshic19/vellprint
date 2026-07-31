@@ -572,8 +572,8 @@ app.post('/api/admin/categories', auth, async (req, res) => {
 });
 
 // POST Create Product
-app.post('/api/admin/products', auth, upload.single('image'), async (req, res) => {
-  const { 
+app.post('/api/admin/products', auth, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'datasheet', maxCount: 1 }]), async (req, res) => {
+  const {
     name, brand_id, part_number, oem_part_number, alternate_part_number,
     hsn_code, sku, category_id, subcategory_id, short_description, long_description,
     tech_specifications, warranty, moq, unit, price, weight, availability,
@@ -586,13 +586,17 @@ app.post('/api/admin/products', auth, upload.single('image'), async (req, res) =
   }
 
   try {
-    const imagePath = req.file ? `/uploads/${req.file.filename}` : '/uploads/placeholder.jpg';
+    const imageFile = req.files && req.files['image'] ? req.files['image'][0] : null;
+    const datasheetFile = req.files && req.files['datasheet'] ? req.files['datasheet'][0] : null;
+
+    const imagePath = imageFile ? `/uploads/${imageFile.filename}` : '/uploads/placeholder.jpg';
+    const datasheetPath = datasheetFile ? `/uploads/${datasheetFile.filename}` : null;
 
     const productId = await db.addProduct({
       name, brand_id, part_number, oem_part_number, alternate_part_number,
       hsn_code, sku, category_id, subcategory_id: subcategory_id || null, short_description, long_description,
       tech_specifications, warranty, moq, unit, price, weight, availability,
-      stock_status, image_path: imagePath, is_featured, is_popular,
+      stock_status, image_path: imagePath, datasheet_path: datasheetPath, is_featured, is_popular,
       is_new_arrival, meta_title, meta_description, seo_url
     });
 
@@ -614,7 +618,7 @@ app.post('/api/admin/products', auth, upload.single('image'), async (req, res) =
     res.json({ success: true, message: 'Product added successfully.', productId });
 
     // Apply watermark in background AFTER responding
-    if (req.file) {
+    if (imageFile) {
       applyWatermark(imagePath).catch(err => {
         console.error('Background watermark error:', err);
       });
@@ -638,7 +642,7 @@ app.delete('/api/admin/products/:id', auth, async (req, res) => {
 });
 
 // PUT Edit/Update Product (Protected)
-app.put('/api/admin/products/:id', auth, upload.single('image'), async (req, res) => {
+app.put('/api/admin/products/:id', auth, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'datasheet', maxCount: 1 }]), async (req, res) => {
   const { id } = req.params;
   const {
     name, brand_id, part_number, oem_part_number, alternate_part_number,
@@ -652,6 +656,8 @@ app.put('/api/admin/products/:id', auth, upload.single('image'), async (req, res
     return res.status(400).json({ success: false, message: 'Product name and SEO URL are required.' });
   }
   try {
+    const imageFile = req.files && req.files['image'] ? req.files['image'][0] : null;
+    const datasheetFile = req.files && req.files['datasheet'] ? req.files['datasheet'][0] : null;
     const fields = {
       name, brand_id, part_number, oem_part_number, alternate_part_number,
       hsn_code, sku, category_id, subcategory_id: subcategory_id || null, short_description, long_description,
@@ -659,10 +665,13 @@ app.put('/api/admin/products/:id', auth, upload.single('image'), async (req, res
       stock_status, is_featured, is_popular, is_new_arrival, meta_title,
       meta_description, seo_url
     };
-    if (req.file) {
-      fields.image_path = `/uploads/${req.file.filename}`;
+    if (imageFile) {
+      fields.image_path = `/uploads/${imageFile.filename}`;
       // Watermark in background
       applyWatermark(fields.image_path).catch(err => console.error('Watermark error:', err));
+    }
+    if (datasheetFile) {
+      fields.datasheet_path = `/uploads/${datasheetFile.filename}`;
     }
     await db.updateProduct(id, fields);
     return res.json({ success: true, message: 'Product updated successfully.' });
